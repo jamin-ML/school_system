@@ -1,0 +1,39 @@
+
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+{% block content %}
+<div class="resource-card" data-type="{{ resource.resource_type }}">
+    <div class="resource-thumbnail">
+        {% if resource.thumbnail %}
+            <img src="{{ resource.thumbnail.url }}" alt="{{ resource.title }}">
+        {% else %}
+            <div class="default-thumbnail {{ resource.resource_type }}">
+                <span class="file-icon">{{ resource.resource_type|upper|slice:":1" }}</span>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="resource-info">
+        <h3>{{ resource.title }}</h3>
+        <p class="teacher">By {{ resource.teacher.get_full_name }}</p>
+        <p class="upload-date">{{ resource.uploaded_at|date:"M d, Y" }}</p>
+        
+        <div class="resource-meta">
+            <span class="resource-type">{{ resource.get_resource_type_display }}</span>
+            {% if resource.subject %}
+                <span class="subject">{{ resource.subject }}</span>
+            {% endif %}
+            <p>{{resource.content_body}}</p>
+        </div>
+        
+        <div class="resource-actions">
+            <a href="{{ resource.file.url }}" class="btn download-btn" download>Download</a>
+            {% if resource.resource_type == 'video' %}
+                <button class="btn preview-btn" data-video-url="{{ resource.file.url }}">Preview</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

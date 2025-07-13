@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | CBC Learning Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">CBC Learning Hub</a>
+      <ul class="nav-links">
+        <li><a href="/templates/dashboard.html">Dashboard</a></li>
+        <li><a href="/templates/materials.html">Materials</a></li>
+        <li><a href="/templates/assignments.html">Assignments</a></li>
+        <li><a href="#" class="active">Notifications</a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="notifications-main">
+    <section class="notifications-header">
+      <h1>Notifications</h1>
+    </section>
+    <section class="notifications-list" id="notifications-list">
+      <!-- Notifications will be injected here -->
+    </section>
+  </main>
+  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html> 

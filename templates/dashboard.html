@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | CBC Learning Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">CBC Learning Hub</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#" id="nav-dashboard">Dashboard</a></li>
+        <li><a href="#" id="nav-materials">Materials</a></li>
+        <li><a href="#" id="nav-assignments">Assignments</a></li>
+        <li><a href="#" id="nav-notifications">Notifications <span id="notif-count" class="badge"></span></a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="dashboard-main">
+    <section class="dashboard-header">
+      <h1 id="dashboard-title">Welcome, <span id="user-name">User</span>!</h1>
+      <div id="role-badge" class="role-badge">Role</div>
+    </section>
+    <section class="dashboard-cards" id="dashboard-cards">
+      <!-- Cards for progress, assignments, engagement, etc. will be injected here -->
+    </section>
+    <section class="dashboard-feed">
+      <div class="dashboard-section">
+        <h2><i class="fa-solid fa-bolt"></i> Activity Feed</h2>
+        <ul id="activity-feed" class="feed-list"></ul>
+      </div>
+      <div class="dashboard-section">
+        <h2><i class="fa-solid fa-lightbulb"></i> Recommendations</h2>
+        <ul id="recommendations" class="feed-list"></ul>
+      </div>
+    </section>
+  </main>
+  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html> 

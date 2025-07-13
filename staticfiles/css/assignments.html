@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignments | CBC Learning Hub</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">CBC Learning Hub</a>
+      <ul class="nav-links">
+        <li><a href="/templates/dashboard.html">Dashboard</a></li>
+        <li><a href="/templates/materials.html">Materials</a></li>
+        <li><a href="#" class="active">Assignments</a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="assignments-main">
+    <section class="assignments-header">
+      <h1>Assignments</h1>
+    </section>
+    <section class="assignments-list" id="assignments-list">
+      <!-- Assignment cards will be injected here -->
+    </section>
+    <div id="assignment-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-assignment-modal">&times;</span>
+        <h2 id="assignment-title"></h2>
+        <div id="assignment-details"></div>
+        <form id="submission-form" style="margin-top:1.2rem;display:none;">
+          <label for="submission-file">Upload your submission:</label>
+          <input type="file" id="submission-file" required>
+          <button type="submit" class="btn"><i class="fa fa-upload"></i> Submit</button>
+        </form>
+        <div id="submission-message" class="modal-message"></div>
+      </div>
+    </div>
+  </main>
+  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+  <script src="/static/js/main.js"></script>
+</body>
+</html> 

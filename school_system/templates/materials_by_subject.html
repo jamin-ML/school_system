@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block title %}Materials for {{ subject.name }}{% endblock %}
+
+{% block content %}
+
+<section>
+  <div class="container">
+    <aside>
+      <h2>Subjects</h2>
+      <ul>
+        <li>Math</li>
+        <li>Science</li>
+        <li>History</li>
+        <li>English</li>
+      </ul>
+    </aside>
+
+    <main>
+      <h2>Math Materials</h2>
+      <div class="material">
+        <p>Algebra Basics (PDF)</p>
+        <a href="#">Download</a>
+      </div>
+      <div class="material">
+        <p>Geometry Video</p>
+        <a href="#">Watch</a>
+      </div>
+    </main>
+  </div>
+</section>
+
+{% endblock %}
+
+

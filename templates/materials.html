@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materials | CBC Learning Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">CBC Learning Hub</a>
+      <ul class="nav-links">
+        <li><a href="/templates/dashboard.html">Dashboard</a></li>
+        <li><a href="#" class="active">Materials</a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="materials-main">
+    <section class="materials-header">
+      <h1>Materials</h1>
+      <form id="materials-search-form" class="materials-search-form">
+        <input type="text" id="search-query" placeholder="Search materials...">
+        <select id="filter-subject"><option value="">All Subjects</option></select>
+        <select id="filter-grade"><option value="">All Grades</option></select>
+        <select id="filter-type"><option value="">All Types</option></select>
+        <button type="submit" class="btn"><i class="fa fa-search"></i> Search</button>
+      </form>
+    </section>
+    <section class="materials-list" id="materials-list">
+      <!-- Resource cards will be injected here -->
+    </section>
+  </main>
+  <!-- Modal for viewing material -->
+  <div id="material-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <h2 id="modal-title"></h2>
+      <div id="modal-viewer"></div>
+      <div class="modal-actions">
+        <button id="download-btn" class="btn"><i class="fa fa-download"></i> Download</button>
+        <button id="pay-btn" class="btn pay-btn"><i class="fa fa-credit-card"></i> Pay to Download</button>
+        <button id="question-btn" class="btn question-btn"><i class="fa fa-question-circle"></i> Ask a Question</button>
+      </div>
+      <div id="modal-message" class="modal-message"></div>
+    </div>
+  </div>
+  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html> 

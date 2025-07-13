@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | CBC Learning Hub</title>
+  
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">CBC Learning Hub</a>
+      <ul class="nav-links">
+        <li><a href="/templates/dashboard.html">Dashboard</a></li>
+        <li><a href="/templates/materials.html">Materials</a></li>
+        <li><a href="/templates/assignments.html">Assignments</a></li>
+        <li><a href="/templates/notifications.html">Notifications</a></li>
+        <li><a href="#" class="active">Profile</a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="profile-main">
+    <section class="profile-header">
+      <h1>My Profile</h1>
+    </section>
+    <section class="profile-info" id="profile-info">
+      <!-- User info will be injected here -->
+    </section>
+    <section class="profile-actions">
+      <form id="language-form">
+        <label for="language-select">Language:</label>
+        <select id="language-select">
+          <option value="en">English</option>
+          <option value="sw">Kiswahili</option>
+        </select>
+        <button type="submit" class="btn">Update Language</button>
+      </form>
+      <form id="password-form" style="margin-top:1.5rem;">
+        <label for="new-password">Change Password:</label>
+        <input type="password" id="new-password" placeholder="New Password" required>
+        <button type="submit" class="btn">Change Password</button>
+      </form>
+      <div id="profile-message" class="modal-message"></div>
+    </section>
+  </main>
+  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html> 

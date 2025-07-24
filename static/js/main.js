@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Make footer visible on every page
+  var footer = document.querySelector('footer');
+  if (footer) {
+    footer.classList.add('visible');
+  }
   // Utility
   function showLoading(show) {
     const loading = document.getElementById('loading');

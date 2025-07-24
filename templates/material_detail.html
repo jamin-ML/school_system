@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex flex-col min-h-screen">
+    <button id="mobileMenuButton" class="md:hidden fixed top-4 left-4 z-50 bg-blue-500 text-white p-2 rounded-md">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <div class="flex flex-1 relative"> <aside id="sidebar" class="w-64 bg-blue-100 border-r p-4 overflow-y-auto transform -translate-x-full 
+                                    md:translate-x-0 transition-transform duration-300 z-40
+                                    fixed md:static md:top-0 md:left-0 md:h-auto"> 
+            <div class="h-full flex flex-col">
+                <h2 class="text-lg font-bold mb-4 text-gray-800">On this page</h2>
+                
+                <nav class="flex-1 overflow-y-auto pb-4"> 
+                    {% for h2 in headings %}
+                        <div class="flex flex-col mb-2">
+                            <a href="#{{ h2.id }}" class="block px-3 py-1 rounded text-gray-800 hover:bg-green-100 hover:text-green-700 truncate" onclick="closeSidebarOnMobile()">
+                                {{ h2.text }}
+                            </a>
+                            {% if h2.children %}
+                                <ul class="ml-4 mt-1 space-y-1 flex flex-col">
+                                    {% for h3 in h2.children %}
+                                        <li>
+                                            <a href="#{{ h3.id }}" class="text-sm text-gray-600 hover:text-green-600 truncate" onclick="closeSidebarOnMobile()">
+                                                {{ h3.text }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </nav>
+            </div>
+        </aside>
+
+        <div class="flex-1 md:ml-64 pt-[80px] pb-[100px]"> <main class="bg-gray-100 p-6 min-h-[calc(100vh - 180px)]"> <div class="max-w-6xl mx-auto">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ material.title }}</h1>
+
+                    <div class="bg-white p-6 shadow-md rounded-lg prose max-w-none">
+                        {{ material.html_content|safe }}
+                    </div>
+
+                    <div class="flex justify-between mt-8">
+                        <a href="#" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">← Previous</a>
+                        <a href="#" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Next →</a>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <button id="backToTopBtn"
+              class="fixed bottom-28 right-6 hidden bg-green-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-600 transition z-50">
+        ↑ Top
+    </button>
+</div>
+
+<script>
+    // Get header and footer elements
+    const header = document.querySelector('header');
+    const footer = document.querySelector('footer');
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+
+    // Function to adjust sidebar height and position
+    function adjustSidebarForDesktop() {
+        const headerHeight = header ? header.offsetHeight : 0;
+        const footerHeight = footer ? footer.offsetHeight : 0;
+        
+        if (window.innerWidth >= 768) { // Desktop view (md breakpoint)
+            // Sidebar is fixed on desktop to scroll separately
+            sidebar.classList.remove('transform', '-translate-x-full', 'transition-transform', 'duration-300');
+            sidebar.classList.add('fixed', 'top-0', 'left-0'); // Ensure it's fixed
+            sidebar.style.top = `${headerHeight}px`; // Start below the header
+            sidebar.style.height = `calc(100vh - ${headerHeight + footerHeight}px)`; // Fill space between header and footer
+        } else { // Mobile view
+            // Sidebar is an off-canvas menu for mobile
+            sidebar.classList.remove('fixed', 'top-0', 'left-0'); // Remove fixed for mobile
+            sidebar.classList.add('transform', '-translate-x-full', 'transition-transform', 'duration-300');
+            sidebar.style.top = '0px'; // Reset top for mobile slide-out
+            sidebar.style.height = '100vh'; // Full height for mobile menu
+        }
+    }
+
+    // Toggle sidebar on mobile
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', function() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebar.classList.toggle('translate-x-0');
+        });
+    }
+
+    // Close sidebar on mobile if a link is clicked
+    function closeSidebarOnMobile() {
+        if (window.innerWidth < 768) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+        }
+    }
+
+    // Initial adjustment and on resize
+    window.addEventListener('load', adjustSidebarForDesktop);
+    window.addEventListener('resize', adjustSidebarForDesktop);
+
+    // Back to Top Button logic (remains unchanged)
+    document.addEventListener('scroll', function() {
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        if (backToTopBtn) {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('hidden');
+            } else {
+                backToTopBtn.classList.add('hidden');
+            }
+        }
+    });
+
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+</script>
+{% endblock %}

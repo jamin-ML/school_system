@@ -1,33 +1,48 @@
+# Import Django REST Framework generic views and permissions
 from rest_framework import generics, permissions
+# Import models used in the API
 from .models import Resource, User, Assignment, StudentProgress, ResourcePayment, Notification,AssignmentSubmission
+# Import serializers for each model
 from .serializers import ResourceSerializer, UserSerializer, AssignmentSerializer, StudentProgressSerializer, NotificationSerializer, AssignmentSubmissionSerializer
+# Import ObtainAuthToken for token-based authentication
 from rest_framework.authtoken.views import ObtainAuthToken
+# Import Response for API responses
 from rest_framework.response import Response
+# Import status codes for API responses
 from rest_framework import status
+# Import FileResponse and Http404 for file downloads and error handling
 from django.http import FileResponse, Http404
 import os
+# Import APIView for custom API endpoints
 from rest_framework.views import APIView
+# Import IsAuthenticated permission for endpoints requiring authentication
 from rest_framework.permissions import IsAuthenticated
+# Import timezone utilities
 from django.utils import timezone
+# Import Q for complex queries
+from django.db.models import Q
 
+# List all users (admin only)
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser]
 
+# Retrieve a specific user (authenticated users)
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+# List and create resources (authenticated or read-only)
 class ResourceListCreateView(generics.ListCreateAPIView):
     queryset = Resource.objects.all().order_by('-created_at') # type: ignore
     serializer_class = ResourceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
+        # Save the resource and notify all students
         resource = serializer.save(uploaded_by=self.request.user)
-        # Notify all students (customize as needed)
         students = User.objects.filter(role='student')  # type: ignore
         for student in students:
             Notification.objects.create(  # type: ignore
@@ -35,42 +50,50 @@ class ResourceListCreateView(generics.ListCreateAPIView):
                 message=f"New resource uploaded: {resource.title} ({resource.subject})"
             )
 
+# List and create assignments (authenticated or read-only)
 class AssignmentListCreateView(generics.ListCreateAPIView):
     queryset = Assignment.objects.all().order_by('-created_at')  # type: ignore
     serializer_class = AssignmentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
+        # Save the assignment and notify the assigned student
         assignment = serializer.save()
         Notification.objects.create(  # type: ignore
             user=assignment.assigned_to,
             message=f"New assignment: {assignment.title} (Due: {assignment.due_date.date()})"
         )
 
+# List and create student progress records
 class StudentProgressListCreateView(generics.ListCreateAPIView):
     queryset = StudentProgress.objects.all().order_by('-last_accessed')  # type: ignore
     serializer_class = StudentProgressSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+# Retrieve, update, or delete a specific assignment
 class AssignmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Assignment.objects.all()  # type: ignore
     serializer_class = AssignmentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+# Retrieve, update, or delete a specific student progress record
 class StudentProgressDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = StudentProgress.objects.all()  # type: ignore
     serializer_class = StudentProgressSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+# Register a new user
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        # Custom create to wrap response
         response = super().create(request, *args, **kwargs)
         return Response({'user': response.data}, status=status.HTTP_201_CREATED)
 
+# Download a resource file (requires payment)
 class ResourceDownloadView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -79,6 +102,7 @@ class ResourceDownloadView(generics.GenericAPIView):
             resource = Resource.objects.get(pk=pk)  # type: ignore
         except Resource.DoesNotExist:  # type: ignore
             raise Http404
+        # Check if the user has paid for the resource
         has_paid = ResourcePayment.objects.filter(student=request.user, resource=resource, paid=True).exists()  # type: ignore
         if not has_paid:
             return Response({'detail': 'Payment required to download this resource.'}, status=403)
@@ -87,13 +111,16 @@ class ResourceDownloadView(generics.GenericAPIView):
             return Response({'detail': 'File not found.'}, status=404)
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
 
+# Get or update the user's language
 class UserLanguageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        # Return the user's current language
         return Response({'language': request.user.language})
 
     def patch(self, request):
+        # Update the user's language
         language = request.data.get('language')
         if language not in dict(User.LANGUAGE_CHOICES):
             return Response({'detail': 'Invalid language.'}, status=400)
@@ -101,13 +128,16 @@ class UserLanguageView(APIView):
         request.user.save()
         return Response({'language': request.user.language})
 
+# List notifications for the user
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # Only return notifications for the current user
         return Notification.objects.filter(user=self.request.user)  # type: ignore
 
+# Mark a notification as read
 class NotificationMarkReadView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -120,6 +150,7 @@ class NotificationMarkReadView(APIView):
         notification.save()
         return Response({'detail': 'Notification marked as read.'})
 
+# Confirm payment for a resource
 class ConfirmResourcePaymentView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -136,6 +167,7 @@ class ConfirmResourcePaymentView(APIView):
         )
         return Response({'detail': 'Payment confirmed. You can now download the resource.'})
 
+# Student dashboard data (progress, assignments, activity, recommendations)
 class StudentDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -195,6 +227,7 @@ class StudentDashboardView(APIView):
             'recommendations': recs
         })
 
+# Teacher dashboard data (uploaded resources, assignments, engagement)
 class TeacherDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -236,18 +269,21 @@ class TeacherDashboardView(APIView):
             }
         })
 
+# List and create assignment submissions
 class AssignmentSubmissionListCreateView(generics.ListCreateAPIView):
     queryset = AssignmentSubmission.objects.all().order_by('-submitted_at')  # type: ignore
     serializer_class = AssignmentSubmissionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        # Save the submission and notify the student
         submission = serializer.save(student=self.request.user)
         Notification.objects.create(  # type: ignore
             user=submission.student,
             message=f"New assignment submission: {submission.assignment}"
         )
 
+# Retrieve a specific assignment submission
 class AssignmentSubmissionDetailView(generics.RetrieveAPIView):
     queryset = AssignmentSubmission.objects.all()  # type: ignore
     serializer_class = AssignmentSubmissionSerializer  # type: ignore
@@ -262,6 +298,7 @@ class AssignmentSubmissionDetailView(generics.RetrieveAPIView):
             return AssignmentSubmission.objects.filter(student=user)  # type: ignore
         return AssignmentSubmission.objects.all()  # type: ignore
 
+# Activity feed for the user (recent notifications, resource views, submissions)
 class ActivityFeedView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -310,4 +347,41 @@ class ActivityFeedView(APIView):
             return datetime.min
         feed = notifications_feed + resource_feed + submission_feed
         feed.sort(key=get_sort_key, reverse=True)
-        return Response({'activity_feed': feed}) 
+        return Response({'activity_feed': feed})
+
+# Provide dropdown options for materials (subjects, grades, types)
+class MaterialDropdownOptionsView(APIView):
+    def get(self, request):
+        subjects = Resource.objects.values_list('subject', flat=True).distinct()#type: ignore
+        grades = Resource.objects.values_list('grade', flat=True).distinct()#type: ignore
+        # Get resource type choices from the model
+        type_choices = [
+            {"value": value, "label": label}
+            for value, label in Resource.RESOURCE_TYPE_CHOICES
+        ]
+        return Response({
+            "subjects": sorted([s for s in subjects if s]),
+            "grades": sorted([g for g in grades if g]),
+            "types": type_choices
+        })
+
+# Filter and list published materials based on search and filters
+class FilteredMaterialsView(APIView):
+    def get(self, request):
+        queryset = Resource.objects.filter(status='published')#type: ignore
+        search = request.GET.get('search')
+        subject = request.GET.get('subject')
+        grade = request.GET.get('grade')
+        resource_type = request.GET.get('type')
+        if search:
+            queryset = queryset.filter(Q(title__icontains=search) | Q(description__icontains=search))
+        if subject:
+            queryset = queryset.filter(subject=subject)
+        if grade:
+            queryset = queryset.filter(grade=grade)
+        if resource_type:
+            queryset = queryset.filter(resource_type=resource_type)
+        queryset = queryset.order_by('-created_at')
+        serializer = ResourceSerializer(queryset, many=True)
+        return Response(serializer.data)
+         

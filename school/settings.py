@@ -10,12 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+# Import Path for filesystem paths and os for environment variables
 from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -26,22 +26,22 @@ SECRET_KEY = 'django-insecure-+1jffa8f3$4hr)b0vbgk%_j3qk49_neq)6ldr^ur5i5*ue5+vh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Hosts/domain names that are valid for this site
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
-    'rest_framework',
-    'learninghub.apps.LearninghubConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'rest_framework',  # Django REST Framework for API support
+    'learninghub.apps.LearninghubConfig',  # Main app
+    'django.contrib.admin',  # Admin site
+    'django.contrib.auth',  # Authentication system
+    'django.contrib.contenttypes',  # Content type framework
+    'django.contrib.sessions',  # Session framework
+    'django.contrib.messages',  # Messaging framework
+    'django.contrib.staticfiles',  # Static file management
 ]
 
+# Middleware stack for request/response processing
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,15 +52,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Root URL configuration
 ROOT_URLCONF = 'school.urls'
 
+# Template engine configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR , 'templates')
+            os.path.join(BASE_DIR , 'templates')  # Custom templates directory
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': True,  # Look for templates in app directories
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -71,12 +73,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI application entry point
 WSGI_APPLICATION = 'school.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# Database configuration (using SQLite by default)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,9 +84,7 @@ DATABASES = {
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# Password validation settings
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -102,29 +100,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# Internationalization settings
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
+
+# Use custom user model from learninghub app
 AUTH_USER_MODEL = 'learninghub.User'
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-
+# Static files (CSS, JavaScript, Images) configuration
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+# Media files (uploads) configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Login URL for authentication redirects
+LOGIN_URL = '/login/'
+
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

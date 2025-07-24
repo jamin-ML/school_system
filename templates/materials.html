@@ -1,54 +1,166 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Materials | CBC Learning Hub</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <nav class="navbar">
-    <div class="container">
-      <a href="#" class="logo">CBC Learning Hub</a>
-      <ul class="nav-links">
-        <li><a href="/templates/dashboard.html">Dashboard</a></li>
-        <li><a href="#" class="active">Materials</a></li>
-        <li><a href="#" id="nav-logout">Logout</a></li>
-      </ul>
-    </div>
-  </nav>
+{% extends 'base.html' %}
+{% block content %}
   <main class="materials-main">
     <section class="materials-header">
-      <h1>Materials</h1>
-      <form id="materials-search-form" class="materials-search-form">
-        <input type="text" id="search-query" placeholder="Search materials...">
-        <select id="filter-subject"><option value="">All Subjects</option></select>
-        <select id="filter-grade"><option value="">All Grades</option></select>
-        <select id="filter-type"><option value="">All Types</option></select>
-        <button type="submit" class="btn"><i class="fa fa-search"></i> Search</button>
-      </form>
+      <div class="header-content">
+        <h1>Educational Resources</h1>
+        <p class="subtitle">Discover high-quality learning materials</p>
+        
+        <!-- Search Form -->
+        <form class="search-form" method="get" action="#">
+          <div class="search-input-group">
+            <input 
+              type="text" 
+              name="search" 
+              placeholder="Search by title or description..." 
+              value="{{ request.GET.search }}"
+              class="search-input"
+              aria-label="Search resources"
+            >
+            <button type="submit" class="search-button" aria-label="Submit search">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="search-filters">
+            <!-- Subject Filter -->
+            <div class="filter-group">
+              <label for="subject-filter" class="filter-label">Subject</label>
+              <select name="subject" id="subject-filter" class="filter-select">
+                <option value="">All Subjects</option>
+                {% for subject_value, subject_label in subjects %}
+                  <option value="{{ subject_value }}" {% if request.GET.subject == subject_value %}selected{% endif %}>
+                    {{ subject_label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            
+            <!-- Grade Filter -->
+            <div class="filter-group">
+              <label for="grade-filter" class="filter-label">Grade</label>
+              <select name="grade" id="grade-filter" class="filter-select">
+                <option value="">All Grades</option>
+                {% for grade_value, grade_label in grades %}
+                  <option value="{{ grade_value }}" {% if request.GET.grade == grade_value %}selected{% endif %}>
+                    {{ grade_label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            
+            <!-- Resource Type Filter -->
+            <div class="filter-group">
+              <label for="type-filter" class="filter-label">Type</label>
+              <select name="type" id="type-filter" class="filter-select">
+                <option value="">All Types</option>
+                {% for type_value, type_label in resource_types %}
+                  <option value="{{ type_value }}" {% if request.GET.type == type_value %}selected{% endif %}>
+                    {{ type_label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
     </section>
-    <section class="materials-list" id="materials-list">
-      <!-- Resource cards will be injected here -->
+    
+    <!-- Search Results Info -->
+    {% if request.GET.search or request.GET.subject or request.GET.grade or request.GET.type %}
+    <div class="search-results-info">
+      <div class="active-filters">
+        {% if request.GET.search %}
+          <span class="active-filter">
+            Search: "{{ request.GET.search }}"
+            <a href="#" class="remove-filter" aria-label="Remove search filter">×</a>
+          </span>
+        {% endif %}
+        {% if request.GET.subject %}
+          <span class="active-filter">
+            Subject: {{ request.GET.subject }}
+            <a href="#" class="remove-filter" aria-label="Remove subject filter">×</a>
+          </span>
+        {% endif %}
+        {% if request.GET.grade %}
+          <span class="active-filter">
+            Grade: {{ request.GET.grade }}
+            <a href="#" class="remove-filter" aria-label="Remove grade filter">×</a>
+          </span>
+        {% endif %}
+        {% if request.GET.type %}
+          <span class="active-filter">
+            Type: {{ request.GET.type }}
+            <a href="#" class="remove-filter" aria-label="Remove type filter">×</a>
+          </span>
+        {% endif %}
+      </div>
+      <a href="#" class="clear-search">Clear all filters</a>
+    </div>
+    {% endif %}
+    
+    <section class="materials-list-container">
+      <div class="materials-grid" id="materials-list">
+        {% for material in materials %}
+          <article class="material-card">
+            <div class="material-image-container">
+              {% if material.image %}
+                <img src="{{ material.image.url }}" alt="{{ material.title }}" class="material-image" loading="lazy">
+              {% else %}
+                <div class="material-image-placeholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                  </svg>
+                </div>
+              {% endif %}
+              {% if material.resource_type %}
+                <span class="resource-type-badge">{{ material.resource_type }}</span>
+              {% endif %}
+            </div>
+            <div class="material-content">
+              <div class="material-meta">
+                {% if material.subject %}
+                  <span class="material-category">{{ material.subject }}</span>
+                {% endif %}
+                {% if material.grade %}
+                  <span class="material-grade">{{ material.grade }}</span>
+                {% endif %}
+              </div>
+              <h3 class="material-title">{{ material.title }}</h3>
+              <p class="material-description">
+                {% if material.description %}
+                  {{ material.description|truncatechars:120 }}
+                {% else %}
+                  No description available
+                {% endif %}
+              </p>
+              <div class="material-footer">
+                <time class="material-date">{{ material.created_at|date:"M d, Y" }}</time>
+                <a href="{% url 'material_detail' material.pk %}" class="view-button">
+                  View Details
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                <path d="M12 18c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6zm0-10c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"/>
+              </svg>
+            </div>
+            <h3>No materials found</h3>
+            <p>We couldn't find any resources matching your criteria.</p>
+            <a href="{% url 'material_list' %}" class="view-button">Browse all resources</a>
+          </div>
+        {% endfor %}
+      </div>
     </section>
   </main>
-  <!-- Modal for viewing material -->
-  <div id="material-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" id="close-modal">&times;</span>
-      <h2 id="modal-title"></h2>
-      <div id="modal-viewer"></div>
-      <div class="modal-actions">
-        <button id="download-btn" class="btn"><i class="fa fa-download"></i> Download</button>
-        <button id="pay-btn" class="btn pay-btn"><i class="fa fa-credit-card"></i> Pay to Download</button>
-        <button id="question-btn" class="btn question-btn"><i class="fa fa-question-circle"></i> Ask a Question</button>
-      </div>
-      <div id="modal-message" class="modal-message"></div>
-    </div>
-  </div>
-  <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
-  <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html> 
+{% endblock %}

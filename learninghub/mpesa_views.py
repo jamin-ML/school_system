@@ -5,7 +5,7 @@ from django.http import JsonResponse
 # Import json module for parsing request bodies
 import json
 # Import models used in payment processing
-from .models import Resource, User, ResourcePayment
+from .models import Material, User
 
 # View to handle M-Pesa payment confirmation callbacks
 @csrf_exempt
@@ -19,11 +19,11 @@ def mpesa_confirmation(request):
         account = data.get('BillRefNumber')  # Use this as resource ID
         # Find the user and resource
         try:
-            resource = Resource.objects.get(id=account)#type: ignore
+            resource = Material.objects.get(id=account)#type: ignore
             # You may need to map phone to user, or require login before payment
             # For demo, just mark all as paid for this resource
             ResourcePayment.objects.filter(resource=resource).update(paid=True)#type: ignore
-        except Resource.DoesNotExist:#type: ignore
+        except Material.DoesNotExist:#type: ignore
             pass
         # Respond to M-Pesa with success
         return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})

@@ -9,16 +9,8 @@ from learninghub import views as hub_views
 urlpatterns = [
     # Home page, handled by the index view
     path('', hub_views.index, name='index'),
-    # Dashboard page for logged-in users
-    path('dashboard/', hub_views.dashboard, name='dashboard'),
     # List of all materials/resources
     path('materials/', hub_views.materials, name='materials'),
-    # List of assignments
-    path('assignments/', hub_views.assignments, name='assignments'),
-    # Notifications page
-    path('notifications/', hub_views.notifications, name='notifications'),
-    # User profile page
-    path('profile/', hub_views.profile, name='profile'),
     # Login page
     path('login/', hub_views.user_login, name='login'),
     # Login page for accounts (Django convention)
@@ -33,6 +25,10 @@ urlpatterns = [
     path('mpesa/validation/', mpesa_views.mpesa_validation, name='mpesa-validation'),
     # Detail page for a specific material/resource, identified by its primary key (pk)
     # path('materials/<int:pk>/', hub_views.resource_detail, name='resource_detail'),
+    path('dashboard/', hub_views.dashboard_view, name='dashboard'),
+
+    path('material/<int:pk>/', hub_views.material_detail, name='material_detail'),
+
 ]
 
 urlpatterns += [

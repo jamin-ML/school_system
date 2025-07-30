@@ -1,7 +1,7 @@
 # Import Django REST Framework's serializer base classes
 from rest_framework import serializers
 # Import models to be serialized
-from .models import User, Resource, Assignment, StudentProgress, ResourcePayment, Notification, AssignmentSubmission
+from .models import User, Material, Notification
 
 # Serializer for the custom User model
 class UserSerializer(serializers.ModelSerializer):
@@ -31,33 +31,15 @@ class ResourceSerializer(serializers.ModelSerializer):
     is_html = serializers.SerializerMethodField()
 
     class Meta:
-        model = Resource
-        fields = ['id', 'title', 'subject', 'grade', 'resource_type', 'description', 'file', 'is_html']
+        model = Material
+        fields = ['id', 'title', 'order', 'grade', 'resource_type', 'description', 'file', 'is_html']
 
-    def get_is_html(self, obj):
-        # Return True if the resource is HTML content only
-        return obj.is_html
-
-# Serializer for the Assignment model
-class AssignmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Assignment
-        fields = '__all__'  # Serialize all fields
-
-# Serializer for the StudentProgress model
-class StudentProgressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudentProgress
-        fields = '__all__'  # Serialize all fields
-
+    
+    def get_subject(self, obj):
+        return obj.subtopic.subject.name if obj.subtopic and hasattr(obj.subtopic, 'subject') else None
 # Serializer for the Notification model
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'  # Serialize all fields
 
-# Serializer for the AssignmentSubmission model
-class AssignmentSubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AssignmentSubmission
-        fields = '__all__'  # Serialize all fields

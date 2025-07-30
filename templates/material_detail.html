@@ -1,130 +1,506 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="flex flex-col min-h-screen">
-    <button id="mobileMenuButton" class="md:hidden fixed top-4 left-4 z-50 bg-blue-500 text-white p-2 rounded-md">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBC Learning Hub - Empowering Learners</title>
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <div class="flex flex-1 relative"> <aside id="sidebar" class="w-64 bg-blue-100 border-r p-4 overflow-y-auto transform -translate-x-full 
-                                    md:translate-x-0 transition-transform duration-300 z-40
-                                    fixed md:static md:top-0 md:left-0 md:h-auto"> 
-            <div class="h-full flex flex-col">
-                <h2 class="text-lg font-bold mb-4 text-gray-800">On this page</h2>
-                
-                <nav class="flex-1 overflow-y-auto pb-4"> 
-                    {% for h2 in headings %}
-                        <div class="flex flex-col mb-2">
-                            <a href="#{{ h2.id }}" class="block px-3 py-1 rounded text-gray-800 hover:bg-green-100 hover:text-green-700 truncate" onclick="closeSidebarOnMobile()">
-                                {{ h2.text }}
-                            </a>
-                            {% if h2.children %}
-                                <ul class="ml-4 mt-1 space-y-1 flex flex-col">
-                                    {% for h3 in h2.children %}
-                                        <li>
-                                            <a href="#{{ h3.id }}" class="text-sm text-gray-600 hover:text-green-600 truncate" onclick="closeSidebarOnMobile()">
-                                                {{ h3.text }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </nav>
-            </div>
-        </aside>
+    <!-- Your Static CSS (assuming these exist) -->
+    <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/materials.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> -->
 
-        <div class="flex-1 md:ml-64 pt-[80px] pb-[100px]"> <main class="bg-gray-100 p-6 min-h-[calc(100vh - 180px)]"> <div class="max-w-6xl mx-auto">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ material.title }}</h1>
+<style>
+    /* General Body and Font Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    :root {
+    --primary-color: #333;
+    --accent-color: #4ade80;
+    --bg-color: #f0f2f5;
+    --text-color: #333;
+    --header-bg: #fff;
+    --sidebar-bg: #2eac62;
+    --sidebar-text: #ecf0f1;
+    --content-bg: #ffffff;
+    --shadow-color: rgba(0,0,0,0.05);
+}
 
-                    <div class="bg-white p-6 shadow-md rounded-lg prose max-w-none">
-                        {{ material.html_content|safe }}
-                    </div>
+[data-theme="dark"] {
+    --primary-color: #e2e8f0;
+    --accent-color: #4ade80;
+    --bg-color: #1a202c;
+    --text-color: #e2e8f0;
+    --header-bg: #2d3748;
+    --sidebar-bg: #1a202c;
+    --sidebar-text: #e2e8f0;
+    --content-bg: #2d3748;
+    --shadow-color: rgba(0,0,0,0.2);
+}
 
-                    <div class="flex justify-between mt-8">
-                        <a href="#" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">← Previous</a>
-                        <a href="#" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Next →</a>
-                    </div>
-                </div>
-            </main>
+
+
+    /* Header Styles */
+    header {
+        padding: 0 20px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        height: 70px;
+        background-color: var(--header-bg);
+        box-shadow: 0 2px 10px var(--shadow-color);
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    .logo {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+       
+        text-decoration: none;
+    }
+    .logo span {
+        color: #16a34a; /* Darker Green */
+    }
+
+    #mainNav ul {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 25px;
+    }
+
+    #mainNav a {
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        color: var(--text-color);
+    }
+    #mainNav a:hover {
+        color: #16a34a;
+    }
+    
+/*--------------------DARK MODE-------------------*/
+    .dark-mode-toggle svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: opacity 0.3s ease;
+        fill: var(--text-color);
+    }
+
+    .dark-mode-toggle .hidden {
+        opacity: 0;
+    }
+
+    [data-theme="dark"] .dark-mode-toggle .dark-icon {
+        opacity: 0;
+    }
+
+    [data-theme="dark"] .dark-mode-toggle .light-icon {
+        opacity: 1;
+    }
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      position: fixed;
+      overflow-x: hidden;
+      margin-top: 0;
+      top: 0;
+      left: 0;
+      padding-top: 70px; /* Space for the fixed header */
+      overflow-y: auto;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    /*----------------SIDEBAR----------------------*/
+    .sidebar h2 {
+        text-align: center;
+        padding: 20px;
+        background-color: #34495e;
+        font-family: 'Lora', serif;
+        font-size: 1.2rem;
+        margin: 0;
+        
+    }
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar ul li a {
+        color: #ecf0f1;
+        text-decoration: none;
+        display: block;
+        padding: 15px 25px;
+        transition: background-color 0.3s, padding-left 0.3s;
+    }
+    .sidebar ul li a:hover {
+        background-color: #34495e;
+        padding-left: 30px;
+        color: var(--sidebar-text);
+    }
+    /* Nested list styles */
+    .sidebar ul ul {
+        background-color: rgba(0,0,0,0.2);
+    }
+    .sidebar ul ul a {
+        padding-left: 40px;
+        font-size: 0.9em;
+    }
+     .sidebar ul ul a:hover {
+        padding-left: 45px;
+    }
+
+
+    /*---------------------Main Content Styles----------------------------*/
+    .main-content {
+        line-height: 1.7;
+        font-size: 1.1rem;
+         background-color: var(--content-bg);
+        color: var(--text-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-top: 100px; /* 70px header + 30px space */
+        margin-left: 290px; /* 260px sidebar + 30px space */
+        margin-right: 30px;
+        margin-bottom: 40px;
+        transition: margin-left 0.3s ease-in-out;
+    }
+    
+    /*-------------------Mobile Menu Button (Hamburger)-------------------------*/
+    .menu-btn {
+        display: none; /* Hidden by default on desktop */
+        background: none;
+        color: var(--primary-color);
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1100;
+        padding: 10px;
+    }
+
+    /* Content Overlay for when sidebar is open on mobile */
+    .content-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 850;
+    }
+    .content-overlay.active {
+        display: block;
+    }
+
+    /* Footer Styles */
+    footer {
+        background-color: #2c3e50;
+        color: white;
+        padding: 40px 20px;
+        position: relative;
+        /* Removed margin-left so it spans the full width and scrolls over the sidebar */
+    }
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .footer-column h3 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .footer-column h3::after {
+        content: ''; display: block; width: 40px; height: 3px;
+        background-color: var(--accent-color); margin-top: 10px;
+    }
+    .footer-links { list-style: none; padding: 0; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: white; text-decoration: none; opacity: 0.8; transition: all 0.3s; }
+    .footer-links a:hover { opacity: 1; color: var(--accent-color); }
+    .social-links { display: flex; gap: 15px; margin-top: 20px; }
+    .social-links a { color: white; font-size: 1.2rem; opacity: 0.8; transition: all 0.3s; }
+    .social-links a:hover { opacity: 1; color: var(--accent-color); }
+    .footer-bottom { text-align: center; padding-top: 30px; margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); opacity: 0.7; }
+
+    /* --- RESPONSIVE STYLES --- */
+    @media (max-width: 992px) {
+        .sidebar {
+            transform: translateX(-100%); /* Hide sidebar off-screen */
+            z-index: 1200; /* Ensure sidebar is on top */
+        }
+        .sidebar.active {
+            transform: translateX(0); /* Show sidebar */
+        }
+        .main-content { /* Footer no longer needs margin adjustment */
+            margin-left: 30px;
+            margin-right: 30px;
+        }
+        .menu-btn {
+            display: block; /* Show hamburger menu button */
+        }
+    }
+
+    @media (max-width: 768px) {
+        #mainNav ul {
+            display: none; /* Hide desktop navigation links */
+        }
+        .main-content { /* Footer no longer needs margin adjustment */
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        .main-content {
+            padding: 25px;
+        }
+        .footer-content {
+            grid-template-columns: 1fr;
+        }
+        .navigation-buttons {
+            flex-direction: column;
+        }
+    }
+
+</style>
+
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">CBC <span>Learning Hub</span></a>
+            
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'materials' %}">Materials</a></li>
+                    <li><a href="#forums">Forums</a></li>
+                    <li><a href="#classes">ICT Classes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li class="dark-mode-toggle">
+                        <svg class="dark-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm40-83q119-15 199.5-104.5T800-480q0-123-80.5-212.5T520-797v634Z"/></svg>
+                        <svg class="light-icon hidden" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
+                    </li>
+                    
+                </ul>
+            </nav>
+
+            <!-- This button is now responsible for the sidebar on mobile -->
+            <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
         </div>
-    </div>
+    </header>
 
-    <button id="backToTopBtn"
-              class="fixed bottom-28 right-6 hidden bg-green-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-600 transition z-50">
-        ↑ Top
-    </button>
+    <div class="sidebar" id="sidebar">
+    <h2>{{ subject.name }} - {{ subject.grade }}</h2>
+
+    <ul>
+        {% for topic in subject.topic_set.all %}
+            <li class="topic-item">
+                <ul class="subtopic-list">
+                    {% for subtopic in topic.subtopic_set.all %}
+                        <li class="subtopic-item">
+                            <strong>{{ subtopic.name }}</strong>
+                            
+                            <ul class="material-list">
+                                {% for material in subtopic.material_set.all|dictsort:"order" %}
+                                    <li>
+                                        <a href="{% url 'material_detail' material.pk %}" 
+                                           class="{% if material.pk == current_material.pk %}active{% endif %}">
+                                            {{ material.title }}
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li>No materials yet.</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% empty %}
+                        <li>No subtopics found for {{ topic.name }}.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>No topics found for this subject.</li>
+        {% endfor %}
+    </ul>
 </div>
 
-<script>
-    // Get header and footer elements
-    const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
+
+
+    <!-- This overlay will dim the content when the sidebar is open on mobile -->
+    <div class="content-overlay" id="contentOverlay"></div>
+
+    <main class="main-content">
+        <!-- Placeholder for your material content -->
+        <div class="prose prose-lg max-w-none prose-green">
+            {% if current_material.html_content %}
+                {{ current_material.html_content|safe }}
+            {% else %}
+                <p>No material content found.</p>
+            {% endif %}
+
+        </div>
+    
+        <!-- Navigation Buttons -->
+        <div class="flex flex-col sm:flex-row justify-between mt-12 pt-8 border-t border-gray-200 navigation-buttons gap-4">
+    
+            {% if previous_material %}
+                <a href="{% url 'material_detail' previous_material.pk %}" class="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow hover:shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    Previous
+                </a>
+            {% else %}
+                <span class="bg-gray-300 text-gray-500 font-medium px-6 py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    Previous
+                </span>
+            {% endif %}
+
+            {% if next_material %}
+                <a href="{% url 'material_detail' next_material.pk %}" class="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow hover:shadow-md">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                </a>
+            {% else %}
+                <span class="bg-gray-300 text-gray-500 font-medium px-6 py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                </span>
+            {% endif %}
+
+        </div>
+    </main>
+    
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>The CBC Learning Hub is dedicated to providing quality educational resources that align with Kenya's Competency-Based Curriculum.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Study Materials</a></li>
+                    <li><a href="#">Forums</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Grade 4-6 Materials</a></li>
+                    <li><a href="#">Grade 7-9 Materials</a></li>
+                    <li><a href="#">Teacher Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
+                <p><i class="fas fa-phone"></i> +254 700 123456</p>
+                <p><i class="fas fa-envelope"></i> info@cbclearninghub.co.ke</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} CBC Learning Hub. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const contentOverlay = document.getElementById('contentOverlay');
+    const darkModeToggle = document.querySelector('.dark-mode-toggle');
+    const htmlElement = document.documentElement;
 
-    // Function to adjust sidebar height and position
-    function adjustSidebarForDesktop() {
-        const headerHeight = header ? header.offsetHeight : 0;
-        const footerHeight = footer ? footer.offsetHeight : 0;
-        
-        if (window.innerWidth >= 768) { // Desktop view (md breakpoint)
-            // Sidebar is fixed on desktop to scroll separately
-            sidebar.classList.remove('transform', '-translate-x-full', 'transition-transform', 'duration-300');
-            sidebar.classList.add('fixed', 'top-0', 'left-0'); // Ensure it's fixed
-            sidebar.style.top = `${headerHeight}px`; // Start below the header
-            sidebar.style.height = `calc(100vh - ${headerHeight + footerHeight}px)`; // Fill space between header and footer
-        } else { // Mobile view
-            // Sidebar is an off-canvas menu for mobile
-            sidebar.classList.remove('fixed', 'top-0', 'left-0'); // Remove fixed for mobile
-            sidebar.classList.add('transform', '-translate-x-full', 'transition-transform', 'duration-300');
-            sidebar.style.top = '0px'; // Reset top for mobile slide-out
-            sidebar.style.height = '100vh'; // Full height for mobile menu
-        }
+    // Function to toggle the sidebar
+    function toggleSidebar() {
+        sidebar.classList.toggle('active');
+        contentOverlay.classList.toggle('active');
     }
 
-    // Toggle sidebar on mobile
-    if (mobileMenuButton) {
-        mobileMenuButton.addEventListener('click', function() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebar.classList.toggle('translate-x-0');
-        });
-    }
+    // Toggle sidebar on menu button click
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSidebar();
+    });
 
-    // Close sidebar on mobile if a link is clicked
-    function closeSidebarOnMobile() {
-        if (window.innerWidth < 768) {
-            sidebar.classList.remove('translate-x-0');
-            sidebar.classList.add('-translate-x-full');
-        }
-    }
-
-    // Initial adjustment and on resize
-    window.addEventListener('load', adjustSidebarForDesktop);
-    window.addEventListener('resize', adjustSidebarForDesktop);
-
-    // Back to Top Button logic (remains unchanged)
-    document.addEventListener('scroll', function() {
-        const backToTopBtn = document.getElementById('backToTopBtn');
-        if (backToTopBtn) {
-            if (window.scrollY > 300) {
-                backToTopBtn.classList.remove('hidden');
-            } else {
-                backToTopBtn.classList.add('hidden');
+    // Close sidebar when clicking on a link inside it
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (sidebar.classList.contains('active')) {
+                toggleSidebar();
             }
+        });
+    });
+
+    // Close sidebar when clicking on the overlay
+    contentOverlay.addEventListener('click', () => {
+        if (sidebar.classList.contains('active')) {
+            toggleSidebar();
         }
     });
 
-    const backToTopBtn = document.getElementById('backToTopBtn');
-    if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+    // Dark Mode Toggle Functionality
+    darkModeToggle.addEventListener('click', () => {
+        const isDark = htmlElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // If no preference saved, check system preference
+        htmlElement.setAttribute('data-theme', 'dark');
     }
+});
+
 </script>
-{% endblock %}
+<script src="https://cdn.tailwindcss.com"></script>
+</body>
+</html>

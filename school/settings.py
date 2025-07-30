@@ -33,14 +33,28 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework for API support
     'learninghub.apps.LearninghubConfig',  # Main app
+    'django_ckeditor_5',  # CKEditor for rich text editing
     'django.contrib.admin',  # Admin site
     'django.contrib.auth',  # Authentication system
     'django.contrib.contenttypes',  # Content type framework
     'django.contrib.sessions',  # Session framework
     'django.contrib.messages',  # Messaging framework
     'django.contrib.staticfiles',  # Static file management
+    
 ]
 
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+    },
+    'extends': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'imageUpload'],
+        'image': {
+            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'],
+        },
+        'theme': 'lark', # Example of a theme setting (if supported)
+    },
+}
 # Middleware stack for request/response processing
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -117,7 +131,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Media files (uploads) configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Login URL for authentication redirects
 LOGIN_URL = '/login/'
 

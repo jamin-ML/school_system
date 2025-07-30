@@ -31,6 +31,8 @@ urlpatterns = [
     path('api/', include('learninghub.api_urls')),
     # DRF's built-in login/logout views for the browsable API
     path('api-auth/', include('rest_framework.urls')),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),  # CKEditor 5 URLs
+
 ]
 
 # Import settings and static utilities for serving static/media files in development

@@ -1,3 +1,10 @@
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+
+}
 /* Dashboard Styles */
 .dashboard-main {
   max-width: 1100px;

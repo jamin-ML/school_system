@@ -16,21 +16,11 @@
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    
-}
 
+  /* ----------------- --------------------------*/
+/*-------------------------Base Styles-----------------------------*/
+  /* ----------------- --------------------------*/
 
-main{
-    padding: 20px;
-    top: 100px;
-    
-}
-
-/* Base Styles */
 .materials-main {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text);
@@ -38,9 +28,14 @@ main{
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+  margin-bottom: 1000px;
+  
 }
 
-/* Header Section */
+  /* ----------------- --------------------------*/
+/*--------------------Header Section--------------------------*/
+  /* ----------------- --------------------------*/
+
 .materials-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -60,7 +55,10 @@ main{
   margin-bottom: 2rem;
 }
 
-/* Search Form */
+  /* ----------------- --------------------------*/
+/*-------------------Search Form------------------------*/
+  /* ----------------- --------------------------*/
+
 .search-form {
   max-width: 900px;
   margin: 0 auto;
@@ -109,7 +107,10 @@ main{
   height: 1.25rem;
 }
 
-/* Filter Controls */
+  /* ----------------- --------------------------*/
+/*----------------Filter Controls-----------------------------*/
+  /* ----------------- --------------------------*/
+
 .search-filters {
   display: flex;
   gap: 1rem;
@@ -147,7 +148,10 @@ main{
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
 
-/* Active Filters */
+  /* ----------------- --------------------------*/
+/*--------------------Active Filters-----------------------------------*/
+  /* ----------------- --------------------------*/
+
 .search-results-info {
   display: flex;
   justify-content: space-between;
@@ -196,7 +200,10 @@ main{
   text-decoration: underline;
 }
 
-/* Materials Grid */
+  /* ----------------- --------------------------*/
+/*------------------------Materials Grid-------------------------------------*/
+  /* ----------------- --------------------------*/
+
 .materials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -345,7 +352,10 @@ main{
   height: 1rem;
 }
 
-/* Empty State */
+  /* ----------------- --------------------------*/
+/*------------------Empty State------------------------------*/
+  /* ----------------- --------------------------*/
+
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -376,11 +386,14 @@ main{
   margin-left: auto;
   margin-right: auto;
 }
+  /* ----------------- --------------------------*/
+/*------------------Responsive Adjustments---------------------*/
+  /* ----------------- --------------------------*/
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .materials-main {
     padding: 1.5rem 1rem;
+    padding-top: 80px;
   }
   
   .materials-header h1 {
@@ -416,6 +429,3 @@ main{
     font-size: 1rem;
   }
 }
-html {
-    scroll-behavior: smooth;
-  }

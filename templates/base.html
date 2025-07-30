@@ -8,23 +8,15 @@
     <title>CBC Learning Hub - Empowering Learners</title>
     {# External icon and font libraries #}
     
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     {# Main CSS files loaded from static directory #}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/materials.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
-</style>
 
 </head>
 <body>
@@ -36,7 +28,7 @@
             {# Main navigation menu #}
             <nav id="mainNav">
                 <ul>
-                    <li><a href="#home">Home</a></li>
+                    <li><a href="{% url 'index' %}">Home</a></li>
                     <li><a href="{% url 'materials' %}">Materials</a></li>
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
@@ -117,7 +109,7 @@
     {# JavaScript files loaded from static directory #}
     <script src="{% static 'js/main.js' %}"></script>t>
     <script src="{% static 'js/materials_details.js' %}"></script>
-    <!-- Inside <head> -->
+    <script src="{% static 'js/index.js' %}"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
 </body>

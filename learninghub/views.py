@@ -9,45 +9,32 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # Import custom user creation form
 from .forms import CustomUserCreationForm
 # Import the Resource model for resource-related views
-from .models import Resource,Material
+from .models import Material,Topic,Subject,SubTopic
+from bs4 import BeautifulSoup
 
 
+#---------------------------------------
 # Home page view (publicly accessible)
+#---------------------------------------
+
 def index(request):
     # Render the index.html template
     return render(request, 'index.html')
 
-# Dashboard view (requires login)
-@login_required
-def dashboard(request):
-    # Render the dashboard.html template, passing the current user
-    return render(request, 'dashboard.html', {'user': request.user})
-
+#---------------------------------------
 # Materials/resources page (requires login)
+#---------------------------------------
+
 @login_required
 def materials(request):
     materials = Material.objects.all()
     return render(request, 'materials.html', {'materials': materials})
 
-# Assignments page (requires login)
-@login_required
-def assignments(request):
-    # Render the assignments.html template, passing the current user
-    return render(request, 'assignments.html', {'user': request.user})
-
-# Notifications page (requires login)
-@login_required
-def notifications(request):
-    # Render the notifications.html template, passing the current user
-    return render(request, 'notifications.html', {'user': request.user})
-
-# Profile page (requires login)
-@login_required
-def profile(request):
-    # Render the profile.html template, passing the current user
-    return render(request, 'profile.html', {'user': request.user})
-
+#---------------------------------------
 # User login view (handles GET and POST)
+#---------------------------------------
+
+
 def user_login(request):
     if request.method == 'POST':
         # If POST, process the submitted login form
@@ -69,7 +56,10 @@ def user_logout(request):
     logout(request)
     return redirect('index')
 
+#---------------------------------------
 # User registration view (handles GET and POST)
+#---------------------------------------
+
 def register(request):
     if request.method == 'POST':
         # If POST, process the submitted registration form
@@ -85,62 +75,38 @@ def register(request):
     # Render the register.html template with the form
     return render(request, 'register.html', {'form': form})
 
-# View for displaying details of a specific resource
-def resource_detail(request, pk):
-    # Fetch the resource by primary key or return 404 if not found
-    resource = get_object_or_404(Resource, pk=pk)
-    # Render the material_detail.html template with the resource
-    return render(request, 'material_detail.html', {'resource': resource})
+#--------------------------------------
+# Material detail view (requires login)
+#---------------------------------------
 
+from django.shortcuts import render, get_object_or_404
+from .models import Material, Subject # Make sure to import your models
 def material_detail(request, pk):
-    material = get_object_or_404(Material, pk=pk)
-    return render(request, 'material_detail.html', {'material': material})
+    current_material = get_object_or_404(Material, pk=pk)
 
+    subject = current_material.subtopic.topic.subject
 
-from bs4 import BeautifulSoup
+    previous_material = Material.objects.filter(
+        subtopic=current_material.subtopic,
+        order__lt=current_material.order
+    ).order_by('-order').first()
 
-def material_detail(request, pk):
-    material = get_object_or_404(Material, pk=pk)
-    
-    # Parse HTML to extract headings
-    soup = BeautifulSoup(material.html_content, 'html.parser')
-    headings = []
-    
-    for i, heading in enumerate(soup.find_all(['h2', 'h3'])):
-        heading_id = f"heading-{i}"
-        heading['id'] = heading_id  # Add ID to the heading
-        
-        headings.append({
-            'id': heading_id,
-            'text': heading.text,
-            'tag': heading.name
-        })
-    
-    # Update the HTML with IDs
-    material.html_content = str(soup)
-    
-    # Group headings into hierarchy
-    structured_headings = []
-    current_h2 = None
-    
-    for heading in headings:
-        if heading['tag'] == 'h2':
-            current_h2 = {
-                'id': heading['id'],
-                'text': heading['text'],
-                'children': []
-            }
-            structured_headings.append(current_h2)
-        elif heading['tag'] == 'h3' and current_h2:
-            current_h2['children'].append({
-                'id': heading['id'],
-                'text': heading['text']
-            })
-    
+    next_material = Material.objects.filter(
+        subtopic=current_material.subtopic,
+        order__gt=current_material.order
+    ).order_by('order').first()
+
     context = {
-        'material': material,
-        'headings': structured_headings,
-        # Add previous/next materials if needed
+        'subject': subject,
+        'current_material': current_material,
+        'previous_material': previous_material,
+        'next_material': next_material,
+        'topic': current_material.subtopic.topic,
     }
-    
+
+    # ✅ This must always be reached!
     return render(request, 'material_detail.html', context)
+
+
+def dashboard_view(request):
+    return render(request, 'dashboard.html')

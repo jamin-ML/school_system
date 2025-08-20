@@ -1,0 +1,337 @@
+/* Base Template Styles */
+
+/* CSS Variables for theming */
+:root {
+    --primary-color: #333;
+    --accent-color: #4ade80;
+    --bg-color: #f0f2f5;
+    --text-color: #333;
+    --header-bg: #fff;
+    --sidebar-bg: #2eac62;
+    --sidebar-text: #ecf0f1;
+    --content-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --hero-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --testimonial-bg: #f8fafc;
+    --footer-bg: #2c3e50;
+    --footer-text: #ffffff;
+    --border-color: #e2e8f0;
+    --gray: #f1f5f9;
+    --gray-dark: #e2e8f0;
+    --text-light: #64748b;
+    --primary-light: #e0f2fe;
+    --danger: #ef4444;
+    --white: #ffffff;
+    --border-radius: 0.5rem;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --primary-color: #e2e8f0;
+    --accent-color: #4ade80;
+    --bg-color: #1a202c;
+    --text-color: #e2e8f0;
+    --header-bg: #2d3748;
+    --sidebar-bg: #1a202c;
+    --sidebar-text: #e2e8f0;
+    --content-bg: #2d3748;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --hero-bg: #1a202c;
+    --card-bg: #2d3748;
+    --testimonial-bg: #2d3748;
+    --footer-bg: #1a202c;
+    --footer-text: #e2e8f0;
+    --border-color: #4a5568;
+    --gray: #2d3748;
+    --gray-dark: #4a5568;
+    --text-light: #a0aec0;
+    --primary-light: #2d3748;
+    --white: #2d3748;
+}
+
+/* Global styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+header {
+    background-color: var(--header-bg);
+    box-shadow: 0 2px 10px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.logo span {
+    color: var(--accent-color);
+}
+
+.logo:hover {
+    color: var(--accent-color);
+}
+
+/* Navigation styles */
+#mainNav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: 2rem;
+}
+
+#mainNav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+#mainNav a:hover {
+    color: var(--accent-color);
+}
+
+#mainNav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+#mainNav a:hover::after {
+    width: 100%;
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode-toggle svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s ease;
+    fill: var(--text-color);
+}
+
+.dark-mode-toggle .light-icon {
+    opacity: 0;
+}
+
+[data-theme="dark"] .dark-mode-toggle .dark-icon {
+    opacity: 0;
+}
+
+[data-theme="dark"] .dark-mode-toggle .light-icon {
+    opacity: 1;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 40px 20px;
+    position: relative;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-column h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    position: relative;
+    color: var(--footer-text);
+}
+
+.footer-column h3::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: var(--accent-color);
+    margin-top: 10px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: var(--footer-text);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: all 0.3s;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-links a {
+    color: var(--footer-text);
+    font-size: 1.2rem;
+    opacity: 0.8;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    margin-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0.7;
+    color: var(--footer-text);
+}
+
+/* Chat button */
+.chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.chat-label {
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .header-container {
+        padding: 1rem;
+    }
+    
+    #mainNav ul {
+        gap: 1rem;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    #mainNav ul:not(.mobile-menu-btn) {
+        display: none;
+    }
+    
+    #mainNav.active ul {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--header-bg);
+        box-shadow: 0 2px 10px var(--shadow-color);
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .chat-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+    }
+    
+    .chat-label {
+        display: none;
+    }
+}

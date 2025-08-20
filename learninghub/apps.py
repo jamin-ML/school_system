@@ -7,3 +7,6 @@ class LearninghubConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     # Name of the app
     name = 'learninghub'
+    def ready(self):
+        import learninghub.signals  # Import signals here
+

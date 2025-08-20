@@ -108,20 +108,61 @@ class NotificationMarkReadView(APIView):
 # Filter and list published materials based on search and filters
 class FilteredMaterialsView(APIView):
     def get(self, request):
-        queryset = Material.objects.filter(status='published')#type: ignore
+        queryset = Material.objects.filter(status='subject')#type: ignore
         search = request.GET.get('search')
         subject = request.GET.get('subject')
         grade = request.GET.get('grade')
-        resource_type = request.GET.get('type')
-        if search:
-            queryset = queryset.filter(Q(title__icontains=search) | Q(description__icontains=search))
+        
         if subject:
-            queryset = queryset.filter(subject=subject)
+            queryset = queryset.filter(subtopic__topic__subject__name=subject)
         if grade:
-            queryset = queryset.filter(grade=grade)
-        if resource_type:
-            queryset = queryset.filter(resource_type=resource_type)
+            queryset = queryset.filter(subtopic__topic__subject__grade=grade)
         queryset = queryset.order_by('-created_at')
         serializer = ResourceSerializer(queryset, many=True)
         return Response(serializer.data)
          
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from .models import (
+    StudentProfile, StudentCourseProgress, StudentBadge,
+    Activity, WeeklyActivity, StudentSkill, Event
+)
+from .serializers import (
+    StudentProfileSerializer, CourseProgressSerializer,
+    BadgeSerializer, ActivitySerializer, WeeklyActivitySerializer,
+    SkillSerializer, EventSerializer
+)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard_data(request):
+    """Fetch full dashboard data for logged-in student"""
+    student = StudentProfile.objects.get(user=request.user)
+
+    # Serialize data
+    profile_data = StudentProfileSerializer(student).data
+    courses_data = CourseProgressSerializer(StudentCourseProgress.objects.filter(student=student), many=True).data
+    badges_data = BadgeSerializer(StudentBadge.objects.filter(student=student), many=True).data
+    activity_data = ActivitySerializer(Activity.objects.filter(student=student).order_by("-timestamp")[:5], many=True).data
+    weekly_data = WeeklyActivitySerializer(WeeklyActivity.objects.filter(student=student).order_by("date"), many=True).data
+    skills_data = SkillSerializer(student.studentskill_set.all(), many=True).data
+    events_data = EventSerializer(Event.objects.filter(student=student).order_by("date_time")[:5], many=True).data
+
+    # Leaderboard (top 10 + student rank)
+    leaderboard = StudentProfile.objects.order_by("-points")[:10].values("user__username", "points")
+    rank = StudentProfile.objects.filter(points__gt=student.points).count() + 1
+
+    return Response({
+        "profile": profile_data,
+        "courses": courses_data,
+        "badges": badges_data,
+        "recent_activity": activity_data,
+        "weekly_activity": weekly_data,
+        "skills": skills_data,
+        "events": events_data,
+        "leaderboard": list(leaderboard),
+        "rank": rank
+    })

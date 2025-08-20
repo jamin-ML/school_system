@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>CBC Learning Hub - Empowering Learners</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{%static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/material_detail.css' %}">
+    
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">CBC <span>Learning Hub</span></a>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'subject_list' %}">Materials</a></li>
+                    <li><a href="#how-it-works">Forums</a></li>
+                    <li><a href="#testimonials">ICT Classes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{% url 'user_login' %}">Login</a></li>
+                    <li><a href="{% url 'user_register' %}">Registr</a></li>
+                    <li class="dark-mode-toggle">
+                        <svg class="dark-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                            width="24px">
+                            <path
+                                d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm40-83q119-15 199.5-104.5T800-480q0-123-80.5-212.5T520-797v634Z" />
+                        </svg>
+                        <svg class="light-icon hidden" xmlns="http://www.w3.org/2000/svg" height="24px"
+                            viewBox="0 -960 960 960" width="24px">
+                            <path
+                                d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z" />
+                        </svg>
+                    </li>
+    
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    <section class="topics-container fun-theme">
+        <header class="topics-header">
+            <h1>🔍 Explore {{ subject.name }} Adventures!</h1>
+            <div class="subject-meta">
+                <span class="subject-grade">📚 {{ subject.grade }}</span>
+                <span class="topics-count">{{ topics|length }} cool topics to discover</span>
+            </div>
+        </header>
+    
+        {% if topics %}
+        <div class="topics-grid">
+            {% for topic in topics %}
+            <div class="card">
+                {% if topic.topic_image %}
+                <img src="{{ topic.topic_image.url }}" alt="{{ topic.name }}">
+                {% else %}
+                <div class="placeholder-image">🖼️</div>
+                {% endif %}
+                <div class="container">
+                    <h4><b>{{ topic.name }}</b></h4>
+                    <p>{{ topic.description|default:"No description yet" }}</p>
+                    <a href="{% url 'material_detail_first' topic.id %}" class="read-button">Read</a>
+                </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-illustration">📭</div>
+            <h3>Whoops! No topics here yet!</h3>
+            <p>Our brainy team is cooking up some amazing content. Check back soon!</p>
+            <button class="suggest-button">Suggest a topic you'd like to see!</button>
+        </div>
+        {% endif %}
+    </section>
+    
+    
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>The CBC Learning Hub is dedicated to providing quality educational resources that align with Kenya's
+                    Competency-Based Curriculum.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Study Materials</a></li>
+                    <li><a href="#">Forums</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Grade 4-6 Materials</a></li>
+                    <li><a href="#">Grade 7-9 Materials</a></li>
+                    <li><a href="#">Teacher Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
+                <p><i class="fas fa-phone"></i> +254 700 123456</p>
+                <p><i class="fas fa-envelope"></i> info@cbclearninghub.co.ke</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} CBC Learning Hub. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Floating Chat Button -->
+    <div class="chat-btn">
+        <i class="fas fa-comment-dots"></i>
+        <span class="chat-label">Ask a Teacher</span>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>

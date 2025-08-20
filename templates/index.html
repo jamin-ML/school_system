@@ -8,153 +8,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        :root {
-            --primary-color: #333;
-            --accent-color: #4ade80;
-            --bg-color: #f0f2f5;
-            --text-color: #333;
-            --header-bg: #fff;
-            --sidebar-bg: #2eac62;
-            --sidebar-text: #ecf0f1;
-            --content-bg: #ffffff;
-            --shadow-color: rgba(0,0,0,0.05);
-            --hero-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --testimonial-bg: #f8fafc;
-            --footer-bg: #2c3e50;
-            --footer-text: #ffffff;
-            --border-color: #e2e8f0;
-        }
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/material_detail.css' %}">
 
-        [data-theme="dark"] {
-            --primary-color: #e2e8f0;
-            --accent-color: #4ade80;
-            --bg-color: #1a202c;
-            --text-color: #e2e8f0;
-            --header-bg: #2d3748;
-            --sidebar-bg: #1a202c;
-            --sidebar-text: #e2e8f0;
-            --content-bg: #2d3748;
-            --shadow-color: rgba(0,0,0,0.2);
-            --hero-bg: #1a202c;
-            --card-bg: #2d3748;
-            --testimonial-bg: #2d3748;
-            --footer-bg: #1a202c;
-            --footer-text: #e2e8f0;
-            --border-color: #4a5568;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        header {
-            background-color: var(--header-bg);
-            box-shadow: 0 2px 10px var(--shadow-color);
-        }
-
-        .logo {
-            color: var(--primary-color);
-        }
-
-        #mainNav a {
-            color: var(--text-color);
-        }
-
-        .hero {
-            background-color: var(--hero-bg);
-        }
-
-        .material-card {
-            background-color: var(--card-bg);
-            box-shadow: 0 4px 15px var(--shadow-color);
-        }
-
-        .testimonials {
-            background-color: var(--testimonial-bg);
-        }
-
-        .testimonial-slide {
-            background-color: var(--card-bg);
-        }
-
-        footer {
-            background-color: var(--footer-bg);
-            color: var(--footer-text);
-        }
-
-        .footer-links a {
-            color: var(--footer-text);
-        }
-
-        .btn-outline {
-            border-color: var(--border-color);
-            color: var(--text-color);
-        }
-
-        .dark-mode-toggle {
-            position: relative;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-        }
-
-        .dark-mode-toggle svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.3s ease;
-            fill: var(--text-color);
-        }
-
-        .dark-mode-toggle .light-icon {
-            opacity: 0;
-        }
-
-        [data-theme="dark"] .dark-mode-toggle .dark-icon {
-            opacity: 0;
-        }
-
-        [data-theme="dark"] .dark-mode-toggle .light-icon {
-            opacity: 1;
-        }
-    </style>
 </head>
 <body>
-    <!-- Language Switcher -->
-    <div class="language-switcher">
-        <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="sw">Kiswahili</option>
-        </select>
-    </div>
+    
 
     <!-- Header -->
     <header>
-        <div class="container header-container">
+        <div class="header-container">
             <a href="#" class="logo">CBC <span>Learning Hub</span></a>
-            
             <nav id="mainNav">
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="{% url 'materials' %}">Materials</a></li>
+                    <li><a href="{% url 'subject_list' %}">Materials</a></li>
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    <li><a href="{% url 'user_login' %}">Login</a></li>
+                    <li><a href="{% url 'user_register' %}">Registr</a></li>
                     <li class="dark-mode-toggle">
                         <svg class="dark-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm40-83q119-15 199.5-104.5T800-480q0-123-80.5-212.5T520-797v634Z"/></svg>
                         <svg class="light-icon hidden" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
                     </li>
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    
                 </ul>
             </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
@@ -341,67 +225,7 @@
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // Initialize AOS animations
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true
-        });
-
-        // Dark Mode Toggle Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.querySelector('.dark-mode-toggle');
-            const htmlElement = document.documentElement;
-
-            // Toggle dark mode
-            darkModeToggle.addEventListener('click', () => {
-                const isDark = htmlElement.getAttribute('data-theme') === 'dark';
-                if (isDark) {
-                    htmlElement.removeAttribute('data-theme');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    htmlElement.setAttribute('data-theme', 'dark');
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
-
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                htmlElement.setAttribute('data-theme', 'dark');
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                // If no preference saved, check system preference
-                htmlElement.setAttribute('data-theme', 'dark');
-            }
-
-            // Testimonial slider functionality
-            const slides = document.querySelectorAll('.testimonial-slide');
-            const dots = document.querySelectorAll('.slider-dot');
-            
-            dots.forEach(dot => {
-                dot.addEventListener('click', function() {
-                    const slideIndex = this.getAttribute('data-slide');
-                    
-                    // Remove active class from all slides and dots
-                    slides.forEach(slide => slide.classList.remove('active'));
-                    dots.forEach(dot => dot.classList.remove('active'));
-                    
-                    // Add active class to selected slide and dot
-                    slides[slideIndex].classList.add('active');
-                    this.classList.add('active');
-                });
-            });
-
-            // Mobile menu functionality
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mainNav = document.getElementById('mainNav');
-            
-            mobileMenuBtn.addEventListener('click', function() {
-                mainNav.classList.toggle('active');
-            });
-        });
-    </script>
-    <script src="{% static 'js/index.js'%}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
 </body>
 </html>

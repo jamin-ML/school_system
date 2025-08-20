@@ -1,0 +1,79 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/cource_list.css' %}">
+</head>
+<body>
+
+    <h1>My Courses</h1>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Enrolled Courses</h2>
+    {% if enrolled_courses %}
+        <ul>
+            {% for progress in enrolled_courses %}
+                <li>
+                    <div class="course-title">{{ progress.course__title }}</div>
+                    <div class="course-subject">{{ progress.course__subject__name }}</div>
+                    
+                    <div>Progress: {{ progress.progress }}%</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ progress.progress }}%">{{ progress.progress }}%</div>
+                    </div>
+                    
+                    <div class="next-lesson">
+                        Next Lesson: 
+                        {% if progress.next_lesson__title %}
+                            <a href="{% url 'material_detail' pk=progress.next_lesson__id %}">{{ progress.next_lesson__title }}</a>
+                        {% else %}
+                            <span class="completed">All materials completed</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if progress.deadline %}
+                        <div class="deadline">Deadline: {{ progress.deadline|date:"F d, Y" }}</div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <p>You are not enrolled in any courses yet.</p>
+            <p>Browse available courses below to get started!</p>
+        </div>
+    {% endif %}
+
+    <h2>Available Courses</h2>
+    {% if available_courses %}
+        <ul>
+            {% for course in available_courses %}
+                <li>
+                    <div class="course-title">{{ course.title }}</div>
+                    <div class="course-subject">{{ course.subject.name }}</div>
+                    <form action="{% url 'enroll_course' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="course_id" value="{{ course.id }}">
+                        <button type="submit">Enroll Now</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <p>No additional courses available at this time.</p>
+            <p>Check back later for new course offerings!</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>

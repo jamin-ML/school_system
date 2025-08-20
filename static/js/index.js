@@ -1,108 +1,297 @@
-// Initialize AOS (Animate On Scroll)
-AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
-    once: true
-});
+// Index Page JavaScript
 
-// Mobile Menu Toggle
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const mainNav = document.getElementById('mainNav');
-if (mobileMenuBtn && mainNav) {
-    mobileMenuBtn.addEventListener('click', () => {
-        mainNav.classList.toggle('active');
-        mobileMenuBtn.innerHTML = mainNav.classList.contains('active') ? 
-            '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-    });
-}
-
-// Dark Mode Toggle
-const darkModeToggle = document.getElementById('darkModeToggle');
-if (darkModeToggle) {
-    // Check for saved user preference or use system preference
-    if (localStorage.getItem('darkMode') === 'enabled' || 
-        (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS animations
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
     }
-    darkModeToggle.addEventListener('change', () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
-    });
-}
 
-// Testimonial Slider
-const slides = document.querySelectorAll('.testimonial-slide');
-const dots = document.querySelectorAll('.slider-dot');
-let currentSlide = 0;
+    // Language switcher functionality
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.addEventListener('change', function() {
+            const selectedLanguage = this.value;
+            // Store language preference
+            localStorage.setItem('preferred-language', selectedLanguage);
+            
+            // You can implement language switching logic here
+            console.log('Language changed to:', selectedLanguage);
+            
+            // Example: Reload page with new language
+            // window.location.href = `?lang=${selectedLanguage}`;
+        });
+        
+        // Set initial language
+        const savedLanguage = localStorage.getItem('preferred-language');
+        if (savedLanguage) {
+            languageSelect.value = savedLanguage;
+        }
+    }
 
-function showSlide(index) {
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
+    // Testimonial slider functionality
+    const slides = document.querySelectorAll('.testimonial-slide');
+    const dots = document.querySelectorAll('.slider-dot');
     
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-    currentSlide = index;
-}
+    if (slides.length > 0 && dots.length > 0) {
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const slideIndex = this.getAttribute('data-slide');
+                
+                // Remove active class from all slides and dots
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                // Add active class to selected slide and dot
+                slides[slideIndex].classList.add('active');
+                this.classList.add('active');
+            });
+        });
 
-if (dots.length && slides.length) {
-    dots.forEach(dot => {
-        dot.addEventListener('click', () => {
-            showSlide(parseInt(dot.getAttribute('data-slide')));
+        // Auto-advance testimonials
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            
+            // Remove active class from all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Add active class to current slide and dot
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }, 5000);
+    }
+
+    // Material card interactions
+    const materialCards = document.querySelectorAll('.material-card');
+    materialCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const link = this.querySelector('a');
+            if (link) {
+                link.click();
+            }
         });
     });
-    // Auto slide change
-    setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }, 5000);
-}
 
-// Language Switcher (placeholder functionality)
-const languageSelect = document.getElementById('languageSelect');
-if (languageSelect) {
-    languageSelect.addEventListener('change', () => {
-        // In a real implementation, this would change the language of the content
-        alert(`Language changed to ${languageSelect.value === 'en' ? 'English' : 'Kiswahili'}. This is a demo - actual implementation would translate the content.`);
-    });
-}
-
-// Floating chat button
-const chatBtn = document.querySelector('.chat-btn');
-if (chatBtn) {
-    chatBtn.addEventListener('click', () => {
-        alert("This would open a live chat interface with a teacher in a real implementation.");
-    });
-}
-
-// Make footer visible on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const footer = document.querySelector('footer');
-    if (footer) {
-        footer.classList.add('visible');
+    // Hero section animations
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+        // Add parallax effect to hero background
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            heroContent.style.transform = `translateY(${rate}px)`;
+        });
     }
-});
 
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
+    // Search functionality (if search form exists)
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        const searchInput = searchForm.querySelector('input[type="text"]');
+        const searchButton = searchForm.querySelector('button[type="submit"]');
         
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
+        // Add search suggestions
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                // You can implement search suggestions here
+                console.log('Searching for:', query);
             });
-            
-            // Close mobile menu if open
-            if (mainNav && mainNav.classList.contains('active')) {
-                mainNav.classList.remove('active');
-                if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+        
+        // Add search button click handler
+        if (searchButton) {
+            searchButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const query = searchInput.value;
+                if (query.trim()) {
+                    // Implement search functionality
+                    console.log('Searching for:', query);
+                    // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                }
+            });
+        }
+    }
+
+    // Smooth scrolling for anchor links
+    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+
+    // Add loading states to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (!this.classList.contains('no-loading')) {
+                const originalText = this.textContent;
+                this.textContent = 'Loading...';
+                this.disabled = true;
+                
+                // Re-enable after a delay (you can remove this in production)
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.disabled = false;
+                }, 2000);
+            }
+        });
+    });
+
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.material-card, .step');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Intersection Observer for animations
+    if ('IntersectionObserver' in window) {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        const animateElements = document.querySelectorAll('.material-card, .step, .testimonial-slide');
+        animateElements.forEach(el => {
+            observer.observe(el);
+        });
+    }
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K for search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.querySelector('input[type="search"], .search-input');
+            if (searchInput) {
+                searchInput.focus();
+            }
+        }
+        
+        // Arrow keys for testimonial navigation
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            const activeSlide = document.querySelector('.testimonial-slide.active');
+            if (activeSlide) {
+                e.preventDefault();
+                const currentIndex = Array.from(slides).indexOf(activeSlide);
+                let newIndex;
+                
+                if (e.key === 'ArrowLeft') {
+                    newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                } else {
+                    newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                }
+                
+                // Remove active class from all slides and dots
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                // Add active class to new slide and dot
+                slides[newIndex].classList.add('active');
+                dots[newIndex].classList.add('active');
             }
         }
     });
+
+    // Add scroll progress indicator
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-color), #22c55e);
+        z-index: 10000;
+        transition: width 0.1s ease;
+    `;
+    document.body.appendChild(progressBar);
+    
+    window.addEventListener('scroll', function() {
+        const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        progressBar.style.width = scrolled + '%';
+    });
+
+    // Add lazy loading for images
+    const images = document.querySelectorAll('img[data-src]');
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    }
+
+    // Add form validation
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error');
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    });
+
+    // Add smooth reveal animations
+    const revealElements = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+    }
 });

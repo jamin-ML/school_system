@@ -27,19 +27,79 @@ class UserSerializer(serializers.ModelSerializer):
 
 # Serializer for the Resource model
 class ResourceSerializer(serializers.ModelSerializer):
-    # Add a computed field to indicate if the resource is HTML content
+    # Add a computed field to indicate if the resource is HTML contentclass ResourceSerializer(serializers.ModelSerializer):
     is_html = serializers.SerializerMethodField()
+    subject = serializers.SerializerMethodField()
 
     class Meta:
         model = Material
-        fields = ['id', 'title', 'order', 'grade', 'resource_type', 'description', 'file', 'is_html']
+        fields = ['id', 'title', 'order', 'html_content', 'xp_value', 'is_html', 'subject']
 
-    
+    def get_is_html(self, obj):
+        return bool(obj.html_content)
+
     def get_subject(self, obj):
-        return obj.subtopic.subject.name if obj.subtopic and hasattr(obj.subtopic, 'subject') else None
+        return obj.subtopic.topic.subject.name if obj.subtopic and obj.subtopic.topic and obj.subtopic.topic.subject else None
 # Serializer for the Notification model
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'  # Serialize all fields
 
+from rest_framework import serializers
+from .models import (
+    StudentProfile, StudentCourseProgress, StudentBadge,
+    Activity, WeeklyActivity, StudentSkill, Event, Course
+)
+
+class StudentProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProfile
+        fields = [
+            "user", "avatar", "streak", "points", "level",
+            "xp", "xp_to_next_level", "rank"
+        ]
+
+
+class CourseProgressSerializer(serializers.ModelSerializer):
+    course_title = serializers.CharField(source="course.title", read_only=True)
+    subject = serializers.CharField(source="course.subject.name", read_only=True)
+
+    class Meta:
+        model = StudentCourseProgress
+        fields = ["course_title", "subject", "progress", "next_lesson", "deadline"]
+
+
+class BadgeSerializer(serializers.ModelSerializer):
+    badge_name = serializers.CharField(source="badge.name", read_only=True)
+    badge_icon = serializers.CharField(source="badge.icon", read_only=True)
+
+    class Meta:
+        model = StudentBadge
+        fields = ["badge_name", "badge_icon", "earned_at", "earned"]
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ["description", "icon", "timestamp"]
+
+
+class WeeklyActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklyActivity
+        fields = ["date", "minutes_learned"]
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    skill_name = serializers.CharField(source="skill.name", read_only=True)
+
+    class Meta:
+        model = StudentSkill
+        fields = ["skill_name", "level"]
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ["title", "event_type", "date_time"]

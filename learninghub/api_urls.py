@@ -14,9 +14,9 @@ urlpatterns = [
     # Retrieve a specific user by ID
     path('users/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     # Register a new user
-    path('auth/register/', RegisterView.as_view(), name='register'),
+    path('auth/register/', RegisterView.as_view(), name='api_register'),
     # Obtain an authentication token (login)
-    path('auth/login/', ObtainAuthToken.as_view(), name='login'),
+    path('auth/login/', ObtainAuthToken.as_view(), name='api_login'),
     # Download a resource (requires payment)
     # Get or update the user's language
     path('users/language/', UserLanguageView.as_view(), name='user-language'),

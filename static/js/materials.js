@@ -1,100 +1,123 @@
-// materials.js
-
 document.addEventListener('DOMContentLoaded', function () {
-    // Only run on materials page
-    if (!document.getElementById('materials-search-form')) return;
-
-    const subjectSelect = document.getElementById('filter-subject');
-    const gradeSelect = document.getElementById('filter-grade');
-    const typeSelect = document.getElementById('filter-type');
-    const materialsList = document.getElementById('materials-list');
-    const searchForm = document.getElementById('materials-search-form');
-    const loadingOverlay = document.getElementById('loading');
-
-    let resourceTypeMap = {};
-
-    function showLoading(show) {
-        if (loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
-    }
-
-    function populateDropdown(select, options, placeholder) {
-        select.innerHTML = '';
-        const defaultOpt = document.createElement('option');
-        defaultOpt.value = '';
-        defaultOpt.textContent = placeholder;
-        select.appendChild(defaultOpt);
-        options.forEach(opt => {
-            const option = document.createElement('option');
-            if (typeof opt === 'object') {
-                option.value = opt.value;
-                option.textContent = opt.label;
-            } else {
-                option.value = opt;
-                option.textContent = opt;
-            }
-            select.appendChild(option);
+    // Initialize AOS animations
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
         });
     }
 
-    function fetchDropdownOptions() {
-        showLoading(true);
-        fetch('/api/materials/options/')
-            .then(res => res.json())
-            .then(data => {
-                populateDropdown(subjectSelect, data.subjects, 'All Subjects');
-                populateDropdown(gradeSelect, data.grades, 'All Grades');
-                populateDropdown(typeSelect, data.types, 'All Types');
-                // Build a map for value->label for resource types
-                resourceTypeMap = {};
-                data.types.forEach(t => { resourceTypeMap[t.value] = t.label; });
-            })
-            .finally(() => showLoading(false));
+    // Dark Mode Toggle Functionality
+    const darkModeToggle = document.querySelector('.dark-mode-toggle');
+    const htmlElement = document.documentElement;
+    const darkIcon = document.querySelector('.dark-icon');
+    const lightIcon = document.querySelector('.light-icon');
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            const isDark = htmlElement.getAttribute('data-theme') === 'dark';
+            console.log('Toggling theme. Current:', isDark ? 'dark' : 'light');
+            if (isDark) {
+                htmlElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+                console.log('Switched to light mode');
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+                console.log('Switched to dark mode');
+            }
+        });
+    } else {
+        console.error('Dark mode toggle element not found');
     }
 
-    function renderMaterials(materials) {
-        if (!materials.length) {
-            materialsList.innerHTML = '<div class="alert alert-info">No materials found.</div>';
-            return;
+    // Check for saved theme preference or system preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        htmlElement.setAttribute('data-theme', savedTheme);
+        console.log('Applying saved theme:', savedTheme);
+        if (savedTheme === 'dark') {
+            darkIcon.classList.add('hidden');
+            lightIcon.classList.remove('hidden');
+        } else {
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
         }
-        materialsList.innerHTML = materials.map(mat => `
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">${mat.title}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${mat.subject} | Grade: ${mat.grade} | Type: ${resourceTypeMap[mat.resource_type] || mat.resource_type}</h6>
-                    <p class="card-text">${mat.description || ''}</p>
-                    ${mat.is_html
-                        ? `<a href="/materials/${mat.id}/" target="_blank" class="btn btn-primary">View</a>`
-                        : `<a href="${mat.file}" target="_blank" class="btn btn-primary">Download</a>`
-                    }
-                </div>
-            </div>
-        `).join('');
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        htmlElement.setAttribute('data-theme', 'dark');
+        darkIcon.classList.add('hidden');
+        lightIcon.classList.remove('hidden');
+        console.log('Applied system preference: dark');
+    } else {
+        htmlElement.setAttribute('data-theme', 'light');
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+        console.log('Applied default: light');
     }
 
-    function fetchMaterials() {
-        showLoading(true);
-        const params = new URLSearchParams();
-        const search = document.getElementById('search-query').value.trim();
-        if (search) params.append('search', search);
-        if (subjectSelect.value) params.append('subject', subjectSelect.value);
-        if (gradeSelect.value) params.append('grade', gradeSelect.value);
-        if (typeSelect.value) params.append('type', typeSelect.value);
-        fetch('/api/materials/filter/?' + params.toString())
-            .then(res => res.json())
-            .then(renderMaterials)
-            .finally(() => showLoading(false));
-    }
+    // Testimonial slider functionality
+    const slides = document.querySelectorAll('.testimonial-slide');
+    const dots = document.querySelectorAll('.slider-dot');
 
-    // Event listeners
-    searchForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        fetchMaterials();
+    dots.forEach(dot => {
+        dot.addEventListener('click', function () {
+            const slideIndex = this.getAttribute('data-slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            slides[slideIndex].classList.add('active');
+            this.classList.add('active');
+        });
     });
-    subjectSelect.addEventListener('change', fetchMaterials);
-    gradeSelect.addEventListener('change', fetchMaterials);
-    typeSelect.addEventListener('change', fetchMaterials);
 
-    // Initial load
-    fetchDropdownOptions();
-    fetchMaterials();
-}); 
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mainNav = document.getElementById('mainNav');
+
+    if (mobileMenuBtn && mainNav) {
+        mobileMenuBtn.addEventListener('click', function () {
+            mainNav.classList.toggle('active');
+        });
+    }
+
+    // Smooth scroll for anchor links
+    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+});
+
+// Add scroll progress indicator
+const progressBar = document.createElement('div');
+progressBar.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-color), #22c55e);
+    z-index: 10000;
+    transition: width 0.1s ease;
+`;
+document.body.appendChild(progressBar);
+
+window.addEventListener('scroll', function () {
+    const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    progressBar.style.width = scrolled + '%';
+});

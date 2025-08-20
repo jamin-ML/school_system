@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enroll in a Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/enroll_course.css' %}">
+</head>
+<body>
+    <h1>Enroll in a Course</h1>
+    
+    {% if messages %}
+        <ul style="list-style: none; padding: 0;">
+            {% for message in messages %}
+                <li class="message {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    {% if courses %}
+        <form method="post">
+            {% csrf_token %}
+            <select name="course_id" required>
+                <option value="" disabled selected>Select a course...</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}" class="course-option">
+                        <span class="course-title">{{ course.title }}</span>
+                        <span class="course-subject">({{ course.subject.name }})</span>
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Enroll Now</button>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <p>No courses available to enroll in at this time.</p>
+            <p>Please check back later for new course offerings.</p>
+        </div>
+    {% endif %}
+    
+    <a href="{% url 'course_list' %}" class="back-link">← Back to Course List</a>
+    <script src="{% static 'js/base.js' %}"></script>
+</body>
+</html>

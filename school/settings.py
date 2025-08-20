@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 # Import Path for filesystem paths and os for environment variables
 from pathlib import Path
 import os
+from django.contrib import messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,6 +70,17 @@ MIDDLEWARE = [
 # Root URL configuration
 ROOT_URLCONF = 'school.urls'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# Optional: style message levels for Bootstrap
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
 # Template engine configuration
 TEMPLATES = [
     {
@@ -122,6 +134,7 @@ USE_TZ = True
 
 # Use custom user model from learninghub app
 AUTH_USER_MODEL = 'learninghub.User'
+
 
 # Static files (CSS, JavaScript, Images) configuration
 STATIC_URL = '/static/'

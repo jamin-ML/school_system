@@ -75,6 +75,9 @@ class Material(models.Model):
     def __str__(self):
         return f"{self.title} (Order: {self.order})"
 
+    class Meta:
+        ordering = ['order', 'id']
+
 
 # ----------------------
 # STUDENT PROFILE & GAMIFICATION
@@ -185,13 +188,11 @@ class StudentBadge(models.Model):
     earned_at = models.DateTimeField(auto_now_add=True)
     earned = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = ('student', 'badge')
 
-class Meta:
-    unique_together = ('student', 'badge')
-
-
-def __str__(self):
-    return f"{self.student.user.username} - {self.badge.name}"
+    def __str__(self):
+        return f"{self.student.user.username} - {self.badge.name}"
 
 
 class Activity(models.Model):
@@ -304,7 +305,7 @@ def handle_material_completion(sender, instance, created, **kwargs):
                 student=student, completed=True
             ).values_list('material_id', flat=True)).order_by('order').first()
 
-            progress_obj.next_lesson = next_material.title if next_material else "All Completed"
+            progress_obj.next_lesson = next_material
             progress_obj.save()
 
         # 3. Award streak badge

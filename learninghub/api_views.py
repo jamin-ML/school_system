@@ -41,13 +41,18 @@ class ResourceListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Save the resource and notify all students
-        resource = serializer.save(uploaded_by=self.request.user)
-        students = User.objects.filter(role='student')  # type: ignore
-        for student in students:
-            Notification.objects.create(  # type: ignore
+        # Save the resource; Material has no uploaded_by/subject fields
+        resource = serializer.save()
+        # Optional: notify students using derived subject name
+        subject_name = None
+        try:
+            subject_name = resource.subtopic.topic.subject.name
+        except Exception:
+            subject_name = None
+        for student in User.objects.filter(role='student'):
+            Notification.objects.create(
                 user=student,
-                message=f"New resource uploaded: {resource.title} ({resource.subject})"
+                message=f"New resource uploaded: {resource.title}{f' ({subject_name})' if subject_name else ''}"
             )
 
 # Register a new user
@@ -108,16 +113,18 @@ class NotificationMarkReadView(APIView):
 # Filter and list published materials based on search and filters
 class FilteredMaterialsView(APIView):
     def get(self, request):
-        queryset = Material.objects.filter(status='subject')#type: ignore
+        queryset = Material.objects.all()
         search = request.GET.get('search')
         subject = request.GET.get('subject')
         grade = request.GET.get('grade')
-        
+
+        if search:
+            queryset = queryset.filter(title__icontains=search)
         if subject:
             queryset = queryset.filter(subtopic__topic__subject__name=subject)
         if grade:
             queryset = queryset.filter(subtopic__topic__subject__grade=grade)
-        queryset = queryset.order_by('-created_at')
+        queryset = queryset.order_by('order', 'id')
         serializer = ResourceSerializer(queryset, many=True)
         return Response(serializer.data)
          

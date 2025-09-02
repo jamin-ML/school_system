@@ -89,7 +89,7 @@
 
         </div>
     
-        <!-- Navigation Buttons -->
+        <!-- Completion + Navigation -->
         <div class="flex flex-col sm:flex-row justify-between mt-12 pt-8 border-t border-gray-200 navigation-buttons gap-4">
     
             {% if previous_material %}
@@ -105,13 +105,16 @@
             {% endif %}
 
             {% if next_material %}
-                <a href="{% url 'material_detail' next_material.pk %}" class="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow hover:shadow-md">
-                    Next
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
-                </a>
+                <form action="{% url 'complete_material' current_material.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow hover:shadow-md">
+                        Mark Complete & Next
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+                </form>
             {% else %}
                 <span class="bg-gray-300 text-gray-500 font-medium px-6 py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
-                    Next
+                    No Next Material
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
                 </span>
             {% endif %}

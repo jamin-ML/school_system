@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework for API support
+    'rest_framework.authtoken',
     'learninghub.apps.LearninghubConfig',  # Main app
     'django_ckeditor_5',  # CKEditor for rich text editing
     'django.contrib.admin',  # Admin site

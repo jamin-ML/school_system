@@ -1,9 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
-from .models import StudentMaterialProgress, StudentCourseProgress, StudentProfile, Badge, StudentBadge, Material, Course
+from .models import User, StudentMaterialProgress, StudentCourseProgress, StudentProfile, Badge, StudentBadge, Material, Course
 
 @receiver(post_save, sender=StudentMaterialProgress)
 def handle_material_completion(sender, instance, created, **kwargs):
@@ -28,7 +27,7 @@ def handle_material_completion(sender, instance, created, **kwargs):
         total_materials = Material.objects.filter(course=course).count()
         completed_materials = StudentMaterialProgress.objects.filter(
             student=student, completed=True, material__course=course
-        ).select_related('material__course')
+        ).count()
         progress_percent = int((completed_materials / total_materials) * 100) if total_materials > 0 else 0
 
         progress_obj.progress = progress_percent
@@ -42,7 +41,7 @@ def handle_material_completion(sender, instance, created, **kwargs):
             ).values_list('material_id', flat=True)
         ).order_by('order').first()
 
-        progress_obj.next_lesson = next_material.title if next_material else "All Completed"
+        progress_obj.next_lesson = next_material
         progress_obj.save()
 
         # 3. Award course completion badge
@@ -76,13 +75,7 @@ def handle_material_completion(sender, instance, created, **kwargs):
             )
             StudentBadge.objects.get_or_create(student=student, badge=badge)
 
-# learninghub/signals.py
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from learninghub.models import User, StudentProfile  # Use learninghub.models.User
-
 @receiver(post_save, sender=User)
 def create_student_profile(sender, instance, created, **kwargs):
     if created:
-        print(f"Creating StudentProfile for user: {instance.username}")
         StudentProfile.objects.create(user=instance)

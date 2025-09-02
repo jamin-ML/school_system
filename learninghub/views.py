@@ -26,7 +26,7 @@ def user_login(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect('materials')
+            return redirect('subject_list')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -124,9 +124,17 @@ def material_detail(request, pk):
     subtopics = topic.subtopic_set.prefetch_related('material_set').all()
 
     # Find previous/next material within the same topic
-    all_materials = Material.objects.filter(subtopic__topic=topic).order_by('order')
-    materials_list = list(all_materials)
-    idx = materials_list.index(material)
+    all_materials = list(Material.objects.filter(subtopic__topic=topic).order_by('order', 'id'))
+    materials_list = all_materials
+    try:
+        idx = materials_list.index(material)
+    except ValueError:
+        # If current material not in ordered list, re-fetch exact instance and compute
+        materials_list_ids = [m.id for m in materials_list]
+        if material.id not in materials_list_ids:
+            materials_list.append(material)
+            materials_list.sort(key=lambda m: (m.order or 0, m.id))
+        idx = materials_list.index(material)
 
     previous_material = materials_list[idx - 1] if idx > 0 else None
     next_material = materials_list[idx + 1] if idx < len(materials_list) - 1 else None
@@ -167,7 +175,7 @@ def dashboard_view(request):
         student = user.studentprofile
     except StudentProfile.DoesNotExist:
         messages.error(request, "Student profile not found.")
-        return redirect('dashboard')
+        return redirect('user_register')
 
     xp_progress = student.xp
     xp_needed = student.xp_to_next_level
@@ -268,6 +276,9 @@ def enroll_course(request):
 # ------------------ COMPLETE MATERIAL ------------------
 @login_required
 def complete_material(request, material_id):
+    if request.method != 'POST':
+        return redirect('material_detail', pk=material_id)
+
     if request.user.role != 'student':
         messages.error(request, "Only students can complete materials.")
         return redirect('course_list')

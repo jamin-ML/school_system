@@ -139,14 +139,18 @@ AUTH_USER_MODEL = 'learninghub.User'
 
 # Static files (CSS, JavaScript, Images) configuration
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR/ 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files (uploads) configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Login URL for authentication redirects
-LOGIN_URL = '/login/'
+
+LOGIN_URL = 'user_login'
+LOGIN_REDIRECT_URL = 'subject_list'
+LOGOUT_REDIRECT_URL = 'index'
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

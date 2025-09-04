@@ -4,13 +4,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.getElementById('sidebar');
   const contentOverlay = document.getElementById('contentOverlay');
+  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const darkModeToggle = document.querySelector('.dark-mode-toggle');
   const htmlElement = document.documentElement;
 
   // Function to toggle the sidebar
   function toggleSidebar() {
-    sidebar.classList.toggle('active');
-    contentOverlay.classList.toggle('active');
+    const isCollapsed = sidebar.classList.toggle('collapsed');
+    sidebar.classList.toggle('active', !isCollapsed);
+    contentOverlay.classList.toggle('active', !isCollapsed);
+    document.querySelector('.main-content')?.classList.toggle('sidebar-closed', isCollapsed);
+    localStorage.setItem('sidebarCollapsed', isCollapsed ? '1' : '0');
   }
 
   // Toggle sidebar on menu button click
@@ -18,6 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
     e.stopPropagation();
     toggleSidebar();
   });
+
+  // Toggle sidebar on dedicated toggle button
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSidebar();
+    });
+  }
 
   // Close sidebar when clicking on a link inside it
   const sidebarLinks = document.querySelectorAll('.sidebar a');
@@ -35,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
       toggleSidebar();
     }
   });
+
+  // Restore persisted sidebar state
+  const savedSidebarCollapsed = localStorage.getItem('sidebarCollapsed');
+  if (savedSidebarCollapsed === '1') {
+    if (!sidebar.classList.contains('collapsed')) {
+      toggleSidebar();
+    }
+  }
 
   // Dark Mode Toggle Functionality
   darkModeToggle.addEventListener('click', () => {

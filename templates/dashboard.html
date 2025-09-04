@@ -13,6 +13,26 @@
 
 </head>
 <body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">CBC <span>Learning Hub</span></a>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'subject_list' %}">Materials</a></li>
+                    <li><a href="#how-it-works">Forums</a></li>
+                    <li><a href="#testimonials">ICT Classes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_logout' %}" class="btn-header btn-logout">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user_login' %}" class="btn-header btn-login">Login</a></li>
+                    <li><a href="{% url 'user_register' %}" class="btn-header btn-login">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
     <div class="container-fluid py-4">
         {% if message %}
             <div class="alert alert-warning">{{ message }}</div>

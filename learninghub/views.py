@@ -26,7 +26,7 @@ def user_login(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect('subject_list')
+            return redirect('course_list')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -57,14 +57,18 @@ def student_registration(request):
 # Home page view
 #----------------------------------------------
 def index(request):
+    #Fetch only the risently added materials
     return render(request, 'index.html')
 
+def coming_soon(request):
+    return render(request,'coming_soon.html')
 #----------------------------------------------
-# Materials page view
+# Materials page view 
 #----------------------------------------------
 # Every user can see and open the materials page
 def subject_list(request):
     all_subjects = Subject.objects.all()
+    
 
     # Dropdown choices
     subject_choices = all_subjects.values_list('id', 'name')
@@ -117,6 +121,9 @@ def topic_list(request, subject_id):
 # ------------------ MATERIAL DETAIL ------------------
 @login_required
 def material_detail(request, pk):
+    if request.user.role != 'student':
+        messages.error(request,"Only Students Can view this content.")
+        return redirect('index')
     material = get_object_or_404(Material, pk=pk)
     subtopic = material.subtopic
     topic = subtopic.topic
@@ -148,6 +155,12 @@ def material_detail(request, pk):
     })
 
 def material_detail_first(request, topic_id):
+
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+    if request.user.role != 'student':
+        messages.error(request,'This msterisl can onlybe viewed by students')
+        return redirect('index')
     
     topic = get_object_or_404(Topic, id=topic_id)
 
@@ -169,7 +182,7 @@ def dashboard_view(request):
     user = request.user
     if user.role != 'student':
         messages.error(request, "This dashboard is only for students.")
-        return redirect('user_register')
+        return redirect('index')
 
     try:
         student = user.studentprofile
@@ -281,7 +294,7 @@ def complete_material(request, material_id):
 
     if request.user.role != 'student':
         messages.error(request, "Only students can complete materials.")
-        return redirect('course_list')
+        return redirect('index')
 
     try:
         student = request.user.studentprofile
@@ -313,7 +326,7 @@ def complete_material(request, material_id):
 def course_list(request):
     if request.user.role != 'student':
         messages.error(request, "Only students can view courses.")
-        return redirect('user_login')  # Replace with your home URL
+        return redirect('index')  # Replace with your home URL
 
     try:
         student = request.user.studentprofile
@@ -342,3 +355,5 @@ def course_list(request):
         'enrolled_courses': enrolled_courses,
         'available_courses': available_courses,
     })
+
+

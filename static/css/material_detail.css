@@ -179,6 +179,31 @@
     transition: transform 0.3s ease-in-out;
 }
 
+/* Collapsed state for all viewports */
+.sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+/* Floating toggle button */
+.sidebar-toggle {
+  position: fixed;      /* keeps it on screen */
+  top: 15px;            /* space from top */
+  right: 15px;          /* space from right */
+  z-index: 1000;        /* keeps it above sidebar and content */
+  background: #fff;     /* button background */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #f0f0f0;
+}
+
+
 
 
 .sidebar h2 {
@@ -516,6 +541,9 @@ footer {
     .sidebar.active {
         transform: translateX(0);
         /* Show sidebar */
+    }
+    .sidebar.collapsed {
+        transform: translateX(-100%);
     }
     .main-content {
         margin-left: 0;

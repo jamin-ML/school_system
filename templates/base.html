@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
+    {% block extra_head %}{% endblock %}
+
 </head>
 <body>
     <header>
@@ -30,7 +32,7 @@
             <nav id="mainNav">
                 <ul>
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'materials' %}">Materials</a></li>
+                    <li><a href="{% url 'subject_list' %}">Materials</a></li>
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
                     <li><a href="#contact">Contact</a></li>
@@ -47,8 +49,7 @@
         </div>
     </header>
     {# Main content block to be overridden by child templates #}
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
 
     <!-- Footer -->
     <footer id="contact">
@@ -113,6 +114,8 @@
     <script src="{% static 'js/materials_details.js' %}"></script>
     <script src="{% static 'js/index.js' %}"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    {% block extra_scripts %}{% endblock %}
 
 </body>
 </html>

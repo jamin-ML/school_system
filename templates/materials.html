@@ -11,14 +11,14 @@
         rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="{% static 'css/materials.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/materials.css' %}">
+    <link rel="stylesheet" href="{% static 'css/material_detail.css' %}">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -33,6 +33,12 @@
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_logout' %}" class="btn-header btn-logout">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user_login' %}" class="btn-header btn-login">Login</a></li>
+                    <li><a href="{% url 'user_register' %}" class="btn-header btn-login">Register</a></li>
+                    {% endif %}
 
                     <!--Dark mode button-->
                     <li class="dark-mode-toggle">
@@ -147,7 +153,7 @@
         {% endif %}
 
 
-        <section class="materials-list-container">
+        <section class="study-materials" id="materials">
             <div class="materials-grid" id="materials-list">
                 {% for subject in subjects %}
                 <article class="material-card">
@@ -191,6 +197,7 @@
                                 </svg>                        </a>
                         </div>
                     </div>
+
                 </article>
                 {% empty %}
                 <div class="empty-state">

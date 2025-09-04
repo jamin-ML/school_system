@@ -27,8 +27,7 @@
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="{% url 'user_login' %}">Login</a></li>
-                    <li><a href="{% url 'user_register' %}">Registr</a></li>
+                    <li><a href="{% url 'user_login' %}" class="btn-header btn-login">Login</a></li>
                     <li class="dark-mode-toggle">
                         <svg class="dark-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm40-83q119-15 199.5-104.5T800-480q0-123-80.5-212.5T520-797v634Z"/></svg>
                         <svg class="light-icon hidden" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
@@ -48,8 +47,8 @@
             <h1>Empowering Learners Through the CBC Journey</h1>
             <p>Access quality educational resources, connect with certified teachers, and excel in your Competency-Based Curriculum learning experience.</p>
             <div class="hero-btns">
-                <a href="#" class="btn btn-accent">Ask a Teacher</a>
-                <a href="#" class="btn btn-outline">Get Started</a>
+                <a href="{% url 'coming_soon' %}" class="btn btn-accent">Ask a Teacher</a>
+                <a href="{% url 'subject_list' %}" class="btn btn-outline">Get Started</a>
             </div>
         </div>
     </section>
@@ -87,10 +86,32 @@
                         <a href="#" class="btn">Preview Content</a>
                     </div>
                 </div>
+                <div class="material-card" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Grade 5 English">
+                    <div class="material-content">
+                        <h3>Grade 5 English</h3>
+                        <p>Enhance your language skills with engaging reading materials, grammar exercises, and writing prompts.</p>
+                        <a href="#" class="btn">Preview Content</a>
+                    </div>
+                </div><div class="material-card" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Grade 5 English">
+                    <div class="material-content">
+                        <h3>Grade 5 English</h3>
+                        <p>Enhance your language skills with engaging reading materials, grammar exercises, and writing prompts.</p>
+                        <a href="#" class="btn">Preview Content</a>
+                    </div>
+                </div><div class="material-card" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Grade 5 English">
+                    <div class="material-content">
+                        <h3>Grade 5 English</h3>
+                        <p>Enhance your language skills with engaging reading materials, grammar exercises, and writing prompts.</p>
+                        <a href="#" class="btn">Preview Content</a>
+                    </div>
+                </div>
             </div>
             
             <div class="view-more" data-aos="fade-up">
-                <a href="#" class="btn btn-outline">View More Materials</a>
+                <a href="{% url 'subject_list' %}" class="btn btn-outline">View More Materials</a>
             </div>
         </div>
     </section>

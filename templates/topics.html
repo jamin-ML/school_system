@@ -25,8 +25,12 @@
                     <li><a href="#how-it-works">Forums</a></li>
                     <li><a href="#testimonials">ICT Classes</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="{% url 'user_login' %}">Login</a></li>
-                    <li><a href="{% url 'user_register' %}">Registr</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_logout' %}" class="btn-header btn-logout">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user_login' %}" class="btn-header btn-login">Login</a></li>
+                    <li><a href="{% url 'user_register' %}" class="btn-header btn-login">Register</a></li>
+                    {% endif %}
                     <li class="dark-mode-toggle">
                         <svg class="dark-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
                             width="24px">

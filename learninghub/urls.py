@@ -23,12 +23,14 @@ urlpatterns = [
     path('mpesa/validation/', mpesa_views.mpesa_validation, name='mpesa-validation'),
     # Detail page for a specific material/resource, identified by its primary key (pk)
     path('dashboard/', hub_views.dashboard_view, name='dashboard'),
-    path('material/<int:material_id>/', hub_views.complete_material, name='complete_material'),
+    # Use a distinct path to avoid clashing with material_detail
+    path('material/<int:material_id>/complete/', hub_views.complete_material, name='complete_material'),
     path('courses/', hub_views.course_list, name='course_list'),
     path('courses/enroll/', hub_views.enroll_course, name='enroll_course'),
-    
+
     path('subject/<int:subject_id>/topic/', hub_views.topic_list, name='topic_list'),
     path('topic/<int:topic_id>/first-material/', hub_views.material_detail_first, name='material_detail_first'),
     path('material/<int:pk>/', hub_views.material_detail, name='material_detail'),
+    path('comingsoon/',hub_views.coming_soon,name='coming_soon'),
 ]
 

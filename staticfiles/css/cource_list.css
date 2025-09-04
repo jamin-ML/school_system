@@ -1,0 +1,167 @@
+:root {
+    --primary: #4361ee;
+    --success: #4cc9f0;
+    --danger: #f72585;
+    --warning: #f8961e;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --white: #ffffff;
+}
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 10px;
+}
+
+h2 {
+    color: var(--primary);
+    margin-top: 30px;
+    font-size: 1.8rem;
+}
+
+.message-error {
+    color: var(--danger);
+    background-color: #fdd;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-left: 4px solid var(--danger);
+    margin-bottom: 10px;
+}
+
+.message-success {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-left: 4px solid #28a745;
+    margin-bottom: 10px;
+}
+
+.message-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-left: 4px solid #17a2b8;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 15px 0;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #2a4dbb;
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #2a4dbb;
+    text-decoration: none;
+}
+
+.progress-container {
+    width: 100%;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    height: 20px;
+    border-radius: 5px;
+    background-color: var(--success);
+    text-align: center;
+    color: white;
+    font-size: 0.8rem;
+    line-height: 20px;
+}
+
+.deadline {
+    color: var(--danger);
+    font-weight: 600;
+    margin-top: 5px;
+    display: inline-block;
+    background-color: #fff5f5;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.completed {
+    color: var(--gray);
+    font-style: italic;
+}
+
+.course-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--dark);
+}
+
+.course-subject {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.next-lesson {
+    margin-top: 8px;
+    font-size: 0.95rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    background-color: var(--light);
+    border-radius: 8px;
+}
